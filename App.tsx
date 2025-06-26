@@ -132,60 +132,9 @@ export default function App() {
     return colors[categoryName as keyof typeof colors] || 'from-gray-400 to-gray-600'
   }
 
-  // Test connection to Replicate API with timeout and detailed error handling
-  const testReplicateConnection = async () => {
-    setConnectionTest('testing')
-    console.log('🔍 Testuję połączenie z Replicate API...')
-    
-    try {
-      // Create AbortController for timeout
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => {
-        controller.abort()
-      }, 10000) // 10 second timeout
-
-      const testResponse = await fetch('https://api.replicate.com/v1/predictions', {
-        method: 'HEAD', // HEAD request to test connectivity without creating prediction
-        headers: {
-          'Authorization': `Token ${REPLICATE_TOKEN}`,
-        },
-        signal: controller.signal
-      })
-
-      clearTimeout(timeoutId)
-      console.log('🌐 Connection test response:', testResponse.status)
-      
-      if (testResponse.ok || testResponse.status === 405) { // 405 Method Not Allowed is ok for HEAD
-        setConnectionTest('success')
-        return true
-      } else {
-        console.log('❌ Connection test failed:', testResponse.status)
-        setConnectionTest('failed')
-        return false
-      }
-    } catch (error: any) {
-      console.error('💥 Connection test error:', error)
-      setConnectionTest('failed')
-      
-      if (error.name === 'AbortError') {
-        console.log('⏰ Connection test timed out')
-      } else if (error.message.includes('fetch')) {
-        console.log('🚫 CORS or network error detected')
-      }
-      
-      return false
-    }
-  }
-
+  // Update callReplicateAPI to use /api/replicate
   const callReplicateAPI = async (systemPrompt: string, userPrompt: string, maxTokens: number = 4000) => {
-    console.log('🚀 Wywołuję Replicate API z modelem openai/gpt-4.1-mini...')
-    
-    // Test connection first
-    const isConnected = await testReplicateConnection()
-    if (!isConnected) {
-      throw new Error('CONNECTION_FAILED')
-    }
-    
+    console.log('🚀 Wywołuję Replicate API przez backend proxy...')
     try {
       // Create AbortController for timeout
       const controller = new AbortController()
@@ -193,11 +142,10 @@ export default function App() {
         controller.abort()
       }, 30000) // 30 second timeout for creation
 
-      const createResponse = await fetch('https://api.replicate.com/v1/predictions', {
+      const createResponse = await fetch('/api/replicate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${REPLICATE_TOKEN}`,
         },
         body: JSON.stringify({
           version: REPLICATE_VERSION,
@@ -228,14 +176,12 @@ export default function App() {
       if (!createResponse.ok) {
         const errorText = await createResponse.text()
         console.error('❌ Błąd tworzenia predykcji:', errorText)
-        
         try {
           const errorData = JSON.parse(errorText)
           console.error('❌ Error details:', errorData)
         } catch (e) {
           console.error('❌ Raw error:', errorText)
         }
-        
         if (createResponse.status === 401) {
           throw new Error('INVALID_TOKEN')
         } else if (createResponse.status === 402) {
@@ -259,30 +205,26 @@ export default function App() {
 
       while ((currentPrediction.status === 'starting' || currentPrediction.status === 'processing') && attempts < maxAttempts) {
         console.log(`⏳ Polling attempt ${attempts + 1}: Status = ${currentPrediction.status}`)
-        
         await new Promise(resolve => setTimeout(resolve, 1000))
         attempts++
-        
         const statusController = new AbortController()
         const statusTimeoutId = setTimeout(() => {
           statusController.abort()
         }, 10000) // 10 second timeout for each status check
-
         try {
-          const statusResponse = await fetch(`https://api.replicate.com/v1/predictions/${prediction.id}`, {
+          const statusResponse = await fetch(`/api/replicate`, {
+            method: 'POST',
             headers: {
-              'Authorization': `Token ${REPLICATE_TOKEN}`,
+              'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ id: prediction.id, status: true }),
             signal: statusController.signal
           })
-
           clearTimeout(statusTimeoutId)
-
           if (!statusResponse.ok) {
             console.error('❌ Status check failed:', statusResponse.status)
             throw new Error(`STATUS_ERROR_${statusResponse.status}`)
           }
-
           currentPrediction = await statusResponse.json()
         } catch (statusError: any) {
           clearTimeout(statusTimeoutId)
@@ -295,37 +237,29 @@ export default function App() {
       }
 
       console.log('🏁 Final prediction status:', currentPrediction.status)
-
       if (currentPrediction.status === 'failed') {
         console.error('❌ Prediction failed:', currentPrediction.error)
         throw new Error('PREDICTION_FAILED')
       }
-
       if (currentPrediction.status === 'canceled') {
         throw new Error('PREDICTION_CANCELED')
       }
-
       if (currentPrediction.status !== 'succeeded') {
         console.error('⏰ Prediction timeout. Final status:', currentPrediction.status)
         throw new Error('PREDICTION_TIMEOUT')
       }
-
       if (!currentPrediction.output) {
         console.error('❌ No output in response:', currentPrediction)
         throw new Error('NO_OUTPUT')
       }
-
       console.log('✅ Prediction succeeded! Output type:', typeof currentPrediction.output)
       console.log('📊 Output preview:', String(currentPrediction.output).substring(0, 200) + '...')
       return currentPrediction.output
-
     } catch (error: any) {
       console.error('💥 Replicate API Error:', error)
-      
       if (error.name === 'AbortError') {
         throw new Error('REQUEST_TIMEOUT')
       }
-      
       throw error
     }
   }
