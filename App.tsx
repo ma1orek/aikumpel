@@ -203,7 +203,7 @@ export default function App() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ id: prediction.id, status: true }),
+            body: JSON.stringify({ id: prediction.id }),
             signal: statusController.signal
           })
           clearTimeout(statusTimeoutId)
