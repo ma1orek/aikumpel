@@ -63,7 +63,7 @@ export default function App() {
 
   // Replicate API Configuration
   const REPLICATE_TOKEN = process.env.NEXT_PUBLIC_REPLICATE_TOKEN || ''
-  const REPLICATE_VERSION = 'openai/gpt-4.1-mini:88b5c59bef5fad5ac29c085968cbe0a3de72ee9c8df5e61fb0a8c8013c02b5b5'
+  const REPLICATE_VERSION = 'openai/gpt-4.1-mini'
 
   // Blinking cursor effect
   useEffect(() => {
