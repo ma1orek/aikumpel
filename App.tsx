@@ -150,21 +150,7 @@ export default function App() {
         body: JSON.stringify({
           version: REPLICATE_VERSION,
           input: {
-            messages: [
-              {
-                role: 'system',
-                content: systemPrompt
-              },
-              {
-                role: 'user', 
-                content: userPrompt
-              }
-            ],
-            max_tokens: maxTokens,
-            temperature: 0.7,
-            top_p: 1,
-            frequency_penalty: 0,
-            presence_penalty: 0
+            prompt: systemPrompt + "\n" + userPrompt
           }
         }),
         signal: controller.signal
