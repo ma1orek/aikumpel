@@ -62,7 +62,7 @@ export default function App() {
   const [connectionTest, setConnectionTest] = useState<'testing' | 'success' | 'failed' | null>(null)
 
   // Replicate API Configuration
-  const REPLICATE_TOKEN = ''
+  const REPLICATE_TOKEN = process.env.NEXT_PUBLIC_REPLICATE_TOKEN || ''
   const REPLICATE_VERSION = 'openai/gpt-4.1-mini:88b5c59bef5fad5ac29c085968cbe0a3de72ee9c8df5e61fb0a8c8013c02b5b5'
 
   // Blinking cursor effect
@@ -795,7 +795,6 @@ Zasady:
         title: "Ograniczenia CORS - API niedostępne z przeglądarki",
         description: "Replicate API blokuje bezpośrednie wywołania z przeglądarki. Wygenerowałem inteligentne rekomendacje na podstawie Twojego opisu.",
         action: "Więcej informacji",
-        url: "https://replicate.com/docs/reference/http",
         icon: <WifiOff className="h-4 w-4" />,
         showFallback: true
       },
@@ -803,7 +802,6 @@ Zasady:
         title: "Brak środków na koncie Replicate",
         description: "Twoje konto Replicate ma niewystarczające środki. Wygenerowałem przykładowe rekomendacje.",
         action: "Doładuj Replicate",
-        url: "https://replicate.com/account/billing",
         icon: <AlertCircle className="h-4 w-4" />,
         showFallback: true
       },
@@ -811,7 +809,6 @@ Zasady:
         title: "Nieprawidłowy token Replicate",
         description: "Token Replicate API jest nieprawidłowy lub nie ma odpowiednich uprawnień.",
         action: "Sprawdź token",
-        url: "https://replicate.com/account/api-tokens",
         icon: <AlertCircle className="h-4 w-4" />,
         showFallback: false
       },
@@ -859,14 +856,14 @@ Zasady:
                 </div>
               )}
             </div>
-            {error.url && (
+            {('url' in error) && typeof error.url === 'string' && error.url && (
               <Button
                 variant="outline"
                 size="sm"
                 className={`ml-4 ${error.showFallback ? 'border-amber-500/50 text-amber-200 hover:bg-amber-500/20' : 'border-red-500/50 text-red-200 hover:bg-red-500/20'}`}
-                onClick={() => window.open(error.url, '_blank')}
+                onClick={() => window.open(String(error.url), '_blank')}
               >
-                {error.action}
+                {String(error.action)}
                 <ExternalLink className="w-4 h-4 ml-2" />
               </Button>
             )}
