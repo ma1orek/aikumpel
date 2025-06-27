@@ -154,130 +154,104 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Animated Gradient Background */}
-      <motion.div
-        aria-hidden
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{
-          background: 'linear-gradient(120deg, #18181b 0%, #23272f 50%, #1e293b 100%)',
-          minHeight: '100vh',
-        }}
-      >
-        <motion.div
-          className="absolute inset-0 w-full h-full"
-          initial={{ backgroundPosition: '0% 50%' }}
-          animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
-          transition={{ repeat: Infinity, duration: 16, ease: 'linear' }}
-          style={{
-            background: 'linear-gradient(120deg, #18181b 0%, #23272f 50%, #1e293b 100%)',
-            backgroundSize: '200% 200%',
-            opacity: 0.7,
-          }}
-        />
-        <motion.div
-          className="absolute left-1/2 top-1/2 w-[120vw] h-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-40"
-          style={{
-            background: 'radial-gradient(circle at 60% 40%, #6366f1 0%, #a21caf 40%, transparent 80%)',
-          }}
-          animate={{ rotate: [0, 360] }}
-          transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
-        />
-      </motion.div>
-      {/* Main Content */}
-      <main className="relative z-10 flex flex-col min-h-screen">
-        {/* Hero Section */}
-        <section className="flex flex-col items-center justify-center py-20 md:py-32 gap-6 border-b border-white/10 bg-black/60 backdrop-blur-sm relative">
-          {/* Energy Ball Animation (CodePen) */}
-          <div className="w-full flex justify-center mb-8">
-            <div className="energy">
-              <span style={{ "--color": "#fbad04", "--radius": "18px", "--duration": "2.5s" } as React.CSSProperties}></span>
-              <span style={{ "--color": "#03a1d9", "--radius": "13px", "--duration": "5s" } as React.CSSProperties}></span>
-              <span style={{ "--color": "#f7036d", "--radius": "15px", "--duration": "7.5s" } as React.CSSProperties}></span>
-              <span style={{ "--color": "#93ff16", "--radius": "20px", "--duration": "10s" } as React.CSSProperties}></span>
+    <div data-theme="dark">
+      <Head>
+        <title>AI Assistant Explorer</title>
+        <meta name="description" content="Odkryj, jak AI może pomóc w Twojej pracy" />
+      </Head>
+      {/* LOGO */}
+      <section className="section" style={{ paddingBottom: 0 }}>
+        <div className="container has-text-centered">
+          <img src="/images/logo.png" alt="Logo" style={{ width: 90, margin: '0 auto 18px auto', display: 'block' }} />
+          <h1 className="title is-1 has-text-weight-bold has-text-white" style={{ fontSize: '3.5rem', letterSpacing: '-.03em', marginBottom: 12 }}>AI ASSISTANT EXPLORER</h1>
+          <p className="subtitle is-4 has-text-grey-light" style={{ fontSize: 22, marginBottom: 18 }}>
+            Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy
+          </p>
+          <p className="has-text-grey-light" style={{ fontSize: 18, marginBottom: 32, maxWidth: 600, margin: '0 auto' }}>
+            Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
+          </p>
+          {/* WYSZUKIWARKA */}
+          <div className="field has-addons is-justify-content-center" style={{ maxWidth: 520, margin: '0 auto' }}>
+            <div className="control is-expanded">
+              <input
+                className="input is-medium"
+                type="text"
+                placeholder="Wyszukaj..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyPress}
+                style={{ background: '#181a20', color: '#fff', borderRadius: 12, outline: 'none', boxShadow: 'none', letterSpacing: '.01em', width: '100%' }}
+              />
+            </div>
+            <div className="control">
+              <button
+                className={`button is-primary is-medium has-text-weight-bold${isLoading || !searchQuery.trim() ? ' is-loading' : ''}`}
+                onClick={handleSearch}
+                disabled={isLoading || !searchQuery.trim()}
+                style={{ minWidth: 120 }}
+              >
+                {isLoading ? 'Analizuję...' : 'Analizuj'}
+              </button>
             </div>
           </div>
-          <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
-            <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
-              <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
-            </h1>
-            {/* Gradient Glow Under Title (możesz zostawić lub usunąć) */}
-            <div className="w-full flex justify-center mb-8">
-              <div className="relative w-[420px] h-[16px] flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full blur-2xl opacity-80 animate-gradient-x bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400" />
-                <div className="w-full h-2 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 opacity-60" />
-              </div>
-            </div>
-            <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
-              Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
-            </div>
-          </div>
-        </section>
-        {/* Search Section */}
-        <section className="flex flex-col items-center justify-center py-10 md:py-16 gap-4 border-b border-white/10 bg-black/50">
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%', maxWidth: 520, margin: '0 auto' }}>
-            <textarea
-              className="form-control"
-              placeholder="Opisz bardzo szczegółowo czym się zajmujesz w pracy..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              onKeyDown={handleKeyPress}
-              rows={3}
-              style={{ resize: 'none', fontSize: '1.15rem', background: '#181a20', color: '#fff', border: '1.5px solid #222', borderRadius: 12, outline: 'none', boxShadow: 'none', padding: '18px 16px', letterSpacing: '.01em', width: '100%' }}
-            />
-            <button
-              className="w-full text-white font-bold shadow-xl rounded-xl py-4 mt-2 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 hover:from-pink-400 hover:to-blue-400 transition-all duration-200"
-              onClick={handleSearch}
-              disabled={isLoading || !searchQuery.trim()}
-            >
-              {isLoading ? 'Analizuję...' : 'Analizuj'}
-            </button>
-          </div>
-        </section>
-        {/* Results Section */}
-        <section className="flex flex-col items-center justify-center py-10 md:py-16 gap-8 bg-black/40">
-          <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 32, color: '#fff', letterSpacing: '.01em' }}>Twoje spersonalizowane zastosowania AI</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 40, width: '100%', maxWidth: 1200 }}>
+        </div>
+      </section>
+      {/* ENERGY BALL */}
+      <div className="mb-6" style={{ display: 'flex', justifyContent: 'center' }}>
+        <div className="energy">
+          <span style={{ "--color": "#fbad04", "--radius": "18px", "--duration": "2.5s" } as React.CSSProperties}></span>
+          <span style={{ "--color": "#03a1d9", "--radius": "13px", "--duration": "5s" } as React.CSSProperties}></span>
+          <span style={{ "--color": "#f7036d", "--radius": "15px", "--duration": "7.5s" } as React.CSSProperties}></span>
+          <span style={{ "--color": "#93ff16", "--radius": "20px", "--duration": "10s" } as React.CSSProperties}></span>
+        </div>
+      </div>
+      {/* RESULTS SECTION */}
+      <section className="section" style={{ background: '#181a20' }}>
+        <div className="container">
+          <h2 className="title is-3 has-text-white has-text-centered" style={{ marginBottom: 40 }}>Twoje spersonalizowane zastosowania AI</h2>
+          <div className="columns is-multiline is-variable is-8">
             {results.map((category, idx) => (
-              <div key={category.name} className="rounded-2xl bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-2xl border-2 border-fuchsia-400/20 p-8 flex flex-col gap-6 relative overflow-hidden mb-8">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-fuchsia-400 to-cyan-400" />
-                  <span className="font-semibold text-lg text-white drop-shadow">{category.name}</span>
-                </div>
-                {/* PROMPT BOX */}
-                <div className="rounded-xl bg-gradient-to-r from-fuchsia-700/80 to-cyan-700/80 p-4 text-white font-mono text-base shadow-inner mb-2 border border-fuchsia-400/30">
-                  <div className="font-bold text-xs mb-1 text-fuchsia-200 uppercase tracking-wider">Prompt do AI</div>
-                  <div className="whitespace-pre-line break-words">{category.applications[0]?.prompt}</div>
-                  <button onClick={() => copyPrompt(category.applications[0]?.prompt || '', category.applications[0]?.id || '')} className={`mt-2 px-3 py-1 rounded bg-fuchsia-600 hover:bg-cyan-500 text-xs font-semibold text-white transition-all ${copiedPrompt === category.applications[0]?.id ? 'opacity-60' : ''}`}>{copiedPrompt === category.applications[0]?.id ? 'Skopiowano!' : 'Kopiuj prompt'}</button>
-                </div>
-                {/* BULLETPOINTS/EXAMPLES */}
-                <ul className="list-disc pl-6 space-y-1 text-white/90 text-base">
-                  {category.applications[0]?.examples?.map((ex, i) => (
-                    <li key={i}>{ex}</li>
-                  ))}
-                </ul>
-                {/* Pozostałe aplikacje (jeśli są) */}
-                {category.applications.slice(1).map((app, i) => (
-                  <div key={app.id} className="mt-6 pt-4 border-t border-white/10">
-                    <div className="font-semibold text-fuchsia-300 mb-1">{app.title}</div>
-                    <div className="text-white/80 mb-2 text-base">{app.description}</div>
-                    <div className="rounded bg-zinc-900/80 p-3 text-xs text-fuchsia-200 font-mono mb-2">{app.prompt}</div>
-                    <ul className="list-disc pl-6 space-y-1 text-white/80 text-xs">
-                      {app.examples?.map((ex, j) => (
-                        <li key={j}>{ex}</li>
+              <div key={category.name} className="column is-6-tablet is-4-desktop">
+                <div className="card" style={{ borderRadius: 18, boxShadow: '0 4px 32px 0 #a21caf22', background: idx % 3 === 0 ? '#23272f' : idx % 3 === 1 ? '#1a1d23' : '#20243a' }}>
+                  <header className="card-header" style={{ borderBottom: '1px solid #a21caf33', background: 'transparent' }}>
+                    <p className="card-header-title has-text-white" style={{ fontWeight: 700 }}>
+                      <span className="tag is-info is-light" style={{ marginRight: 12 }}></span>
+                      {category.name}
+                    </p>
+                  </header>
+                  <div className="card-content">
+                    {/* PROMPT BOX */}
+                    <div className="notification is-link is-light" style={{ borderRadius: 12, background: '#2d3748', color: '#fff', marginBottom: 16 }}>
+                      <div className="is-size-7 has-text-weight-bold has-text-info mb-2">Prompt do AI</div>
+                      <div className="is-family-monospace" style={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>{category.applications[0]?.prompt}</div>
+                      <button onClick={() => copyPrompt(category.applications[0]?.prompt || '', category.applications[0]?.id || '')} className={`button is-small is-info mt-2${copiedPrompt === category.applications[0]?.id ? ' is-light' : ''}`}>{copiedPrompt === category.applications[0]?.id ? 'Skopiowano!' : 'Kopiuj prompt'}</button>
+                    </div>
+                    {/* BULLETPOINTS/EXAMPLES */}
+                    <ul className="has-text-white is-size-6" style={{ paddingLeft: 20, marginBottom: 0 }}>
+                      {category.applications[0]?.examples?.map((ex, i) => (
+                        <li key={i} style={{ marginBottom: 4 }}>{ex}</li>
                       ))}
                     </ul>
+                    {/* Pozostałe aplikacje (jeśli są) */}
+                    {category.applications.slice(1).map((app, i) => (
+                      <div key={app.id} className="mt-5 pt-4" style={{ borderTop: '1px solid #a21caf22' }}>
+                        <div className="has-text-info has-text-weight-semibold mb-1">{app.title}</div>
+                        <div className="has-text-white mb-2 is-size-6">{app.description}</div>
+                        <div className="notification is-link is-light is-family-monospace mb-2" style={{ borderRadius: 8, background: '#23272f', color: '#fff' }}>{app.prompt}</div>
+                        <ul className="has-text-white is-size-7" style={{ paddingLeft: 20 }}>
+                          {app.examples?.map((ex, j) => (
+                            <li key={j}>{ex}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             ))}
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
     </div>
   );
 }

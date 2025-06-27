@@ -7,12 +7,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Accept both REPLICATE_API_KEY and REPLICATE_API_TOKEN for compatibility
+    const replicateApiKey = process.env.REPLICATE_API_KEY || process.env.REPLICATE_API_TOKEN;
+    if (!replicateApiKey) {
+      res.status(500).json({ error: 'Replicate API key not set in environment variables (REPLICATE_API_KEY or REPLICATE_API_TOKEN)' });
+      return;
+    }
     if (req.body.version && req.body.input) {
       // Tworzenie predykcji
       const response = await fetch('https://api.replicate.com/v1/predictions', {
         method: 'POST',
         headers: {
-          'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
+          'Authorization': `Token ${replicateApiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(req.body),
@@ -23,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       // Sprawdzanie statusu predykcji
       const response = await fetch(`https://api.replicate.com/v1/predictions/${req.body.id}`, {
         headers: {
-          'Authorization': `Token ${process.env.REPLICATE_API_KEY}`,
+          'Authorization': `Token ${replicateApiKey}`,
           'Content-Type': 'application/json',
         },
       });

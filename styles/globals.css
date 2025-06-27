@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bulma/css/bulma.min.css';
 @source "../node_modules";
 
 @custom-variant dark (&:is(.dark *));
