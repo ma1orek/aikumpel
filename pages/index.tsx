@@ -1,6 +1,6 @@
+// TEST: commit sprawdzający czy push działa
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 
 // --- Typy ---
 interface AIApplication {
@@ -19,6 +19,14 @@ interface AICategory {
 }
 
 const REPLICATE_VERSION = 'openai/gpt-4.1-mini';
+const pastelCards = [
+  'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)', // niebieski
+  'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)', // różowy
+  'linear-gradient(135deg, #f9f586 0%, #fbc2eb 100%)', // żółty
+  'linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%)', // zielony
+  'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)', // miętowy
+  'linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)', // fioletowy
+];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -164,139 +172,79 @@ export default function Home() {
   };
 
   return (
-    <div id="colorlib-page">
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, Arial, sans-serif', padding: 0, margin: 0 }}>
       <Head>
         <title>AIASSIST</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <a href="#" className="js-colorlib-nav-toggle colorlib-nav-toggle"><i /></a>
-      <aside id="colorlib-aside" role="complementary" className="js-fullheight">
-        <h1 id="colorlib-logo" className="mb-4 mb-md-5">
-          <Link href="/" legacyBehavior>
-            <a style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}>AIASSIST</a>
-          </Link>
-        </h1>
-        <nav id="colorlib-main-menu" role="navigation">
-          <ul>
-            <li className="colorlib-active"><a href="#">Home</a></li>
-            <li><a href="#">Learn</a></li>
-            <li><a href="#">Support</a></li>
-          </ul>
-        </nav>
-        <div className="colorlib-footer">
-          <div className="mb-4">
-            <h3>Subscribe for newsletter</h3>
-            <form action="#" className="colorlib-subscribe-form">
-              <div className="form-group d-flex">
-                <div className="icon"><span className="icon-paper-plane" /></div>
-                <input type="text" className="form-control" placeholder="Enter Email Address" />
-              </div>
-            </form>
+      {/* HERO SECTION */}
+      <section style={{ maxWidth: 1100, margin: '0 auto', padding: '64px 16px 32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
+          <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
+          <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
+            <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
+          </h1>
+          <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
+            Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
           </div>
-          <p className="pfooter">
-            Napędzane przez AI • Stworzone z <span style={{ color: 'red' }}>❤</span> dla zwiększenia produktywności
-          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%', maxWidth: 520, margin: '0 auto' }}>
+            <textarea
+              className="form-control"
+              placeholder="Opisz bardzo szczegółowo czym się zajmujesz w pracy..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyPress}
+              rows={3}
+              style={{ resize: 'none', fontSize: '1.15rem', background: '#181a20', color: '#fff', border: '1.5px solid #222', borderRadius: 12, outline: 'none', boxShadow: 'none', padding: '18px 16px', letterSpacing: '.01em', width: '100%' }}
+            />
+            <button
+              className="custom-btn"
+              onClick={handleSearch}
+              disabled={isLoading || !searchQuery.trim()}
+              style={{ width: '100%', fontSize: '1.15rem', fontWeight: 700, borderRadius: 12, padding: '14px 0', background: 'linear-gradient(90deg,#6ec1e4,#b388ff)', color: '#fff', border: 'none', boxShadow: isLoading ? '0 0 12px #6ec1e477' : 'none', transition: 'box-shadow 0.2s', marginTop: 4, letterSpacing: '.01em', cursor: isLoading ? 'not-allowed' : 'pointer' }}
+            >
+              {isLoading ? 'Analizuję...' : 'Analizuj'}
+            </button>
+          </div>
         </div>
-      </aside>
-      <div id="colorlib-main">
-        <section className="ftco-section ftco-no-pt ftco-no-pb">
-          <div className="container px-md-0">
-            <div className="row d-flex no-gutters">
-              <div className="col-md-12 portfolio-wrap">
-                <div className="row no-gutters align-items-center">
-                  <div className="col-md-12">
-                    <div className="text pt-5 pl-0 px-lg-5 pl-md-4 ftco-animate">
-                      <div className="px-4 px-lg-4">
-                        <div className="desc">
-                          <div className="top">
-                            <span className="subheading">AI Assistant Explorer</span>
-                            <h2 className="mb-4">W czym może pomóc Ci AI?</h2>
-                          </div>
-                          <div className="absolute">
-                            <p>Opisz szczegółowo czym się zajmujesz w pracy, a otrzymasz spersonalizowaną listę konkretnych zastosowań AI assistantów z gotowymi promptami</p>
-                          </div>
-                          <div className="form-group mt-4">
-                            <textarea
-                              className="form-control"
-                              placeholder="Opisz bardzo szczegółowo czym się zajmujesz w pracy..."
-                              value={searchQuery}
-                              onChange={e => setSearchQuery(e.target.value)}
-                              onKeyDown={handleKeyPress}
-                              rows={3}
-                              style={{ resize: 'none' }}
-                            />
-                          </div>
-                          <div className="form-group mt-3">
-                            <button
-                              className="custom-btn"
-                              onClick={handleSearch}
-                              disabled={isLoading || !searchQuery.trim()}
-                            >
-                              {isLoading ? 'Analizuję...' : 'Analizuj'}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+      </section>
+      {/* WYNIKI AI JAKO KARTY */}
+      {hasSearched && (
+        <section style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px 64px 16px' }}>
+          <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 32, color: '#fff', letterSpacing: '.01em' }}>Twoje spersonalizowane zastosowania AI</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
+            {results.length === 0 && (
+              <div style={{ color: '#bbb', fontSize: 18, padding: 32, background: '#181a20', borderRadius: 16, textAlign: 'center' }}>Brak wyników. Spróbuj opisać swoją pracę inaczej.</div>
+            )}
+            {results.map((cat, i) => (
+              <div key={cat.name} style={{ marginBottom: 0 }}>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16, letterSpacing: '.01em' }}>{cat.name}</div>
+                {cat.applications.map((app, j) => (
+                  <div key={app.id} style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 16px #0002', padding: '28px 24px 22px 24px', marginBottom: 24, minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: `6px solid #6ec1e4`, backgroundImage: pastelCards[(i + j) % pastelCards.length], color: '#181a20', position: 'relative' }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, letterSpacing: '-.01em', lineHeight: 1.18 }}>{app.title}</div>
+                    <div style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{app.description}</div>
+                    <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 8 }}><span style={{ color: '#6ec1e4', fontWeight: 700 }}>Prompt:</span> {app.prompt}</div>
+                    <button
+                      className="custom-btn"
+                      style={{ fontSize: 13, padding: '6px 18px', borderRadius: 8, background: '#181a20', color: '#fff', border: 'none', fontWeight: 700, marginTop: 8, alignSelf: 'flex-end', cursor: 'pointer' }}
+                      onClick={() => copyPrompt(app.prompt || '', app.id)}
+                    >
+                      {copiedPrompt === app.id ? 'Skopiowano!' : 'Kopiuj prompt'}
+                    </button>
+                    {app.examples && app.examples.length > 0 && (
+                      <ul style={{ fontSize: 14, margin: '14px 0 0 0', paddingLeft: 18, color: '#23242a', opacity: 0.85 }}>
+                        {app.examples.map((ex, idx) => (
+                          <li key={idx}>{ex}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
-                </div>
+                ))}
               </div>
-              {hasSearched && (
-                <div className="col-md-12 portfolio-wrap mt-5">
-                  <div className="row no-gutters align-items-center">
-                    <div className="col-md-12">
-                      <div className="text pt-5 pl-0 px-lg-5 pl-md-4 ftco-animate">
-                        <div className="px-4 px-lg-4">
-                          <div className="desc">
-                            <div className="top">
-                              <span className="subheading">Wyniki AI</span>
-                              <h2 className="mb-4">Twoje spersonalizowane zastosowania AI</h2>
-                            </div>
-                            <div className="absolute">
-                              {results.length === 0 && (
-                                <p>Brak wyników. Spróbuj opisać swoją pracę inaczej.</p>
-                              )}
-                              {results.map((cat) => (
-                                <div key={cat.name} className="mb-5">
-                                  <h3 className="mb-3">{cat.name}</h3>
-                                  {cat.applications.map(app => (
-                                    <div key={app.id} className="mb-4 p-4" style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
-                                      <h4 className="mb-2">{app.title}</h4>
-                                      <p className="mb-2">{app.description}</p>
-                                      <div className="mb-2">
-                                        <strong>Prompt:</strong>
-                                        <span style={{ wordBreak: 'break-all', display: 'block', marginTop: 4 }}>{app.prompt}</span>
-                                        <button
-                                          className="custom-btn mt-2"
-                                          style={{ fontSize: 12, padding: '4px 12px' }}
-                                          onClick={() => copyPrompt(app.prompt || '', app.id)}
-                                        >
-                                          {copiedPrompt === app.id ? 'Skopiowano!' : 'Kopiuj prompt'}
-                                        </button>
-                                      </div>
-                                      {app.examples && app.examples.length > 0 && (
-                                        <ul className="mb-0" style={{ fontSize: 14 }}>
-                                          {app.examples.map((ex, idx) => (
-                                            <li key={idx}>{ex}</li>
-                                          ))}
-                                        </ul>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            ))}
           </div>
         </section>
-      </div>
+      )}
     </div>
   );
 }
