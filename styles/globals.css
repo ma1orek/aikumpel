@@ -509,3 +509,41 @@ textarea:focus {
   0% { opacity:0; transform:translateY(40px); }
   100% { opacity:1; transform:translateY(0); }
 }
+
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient-x {
+  animation: gradient-x 6s ease-in-out infinite;
+  background-size: 200% 200%;
+}
+
+/* Energy Ball Animation (CodePen) */
+.energy {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+  z-index: 10;
+}
+.energy span {
+  position: absolute;
+  width: calc(220px + var(--radius));
+  height: calc(220px + var(--radius));
+  background: var(--color);
+  border-radius: 50%;
+  transform-origin: calc(110px + var(--radius));
+  animation: energy-animate 5s linear infinite;
+  animation-duration: calc(var(--duration));
+  mix-blend-mode: plus-lighter;
+  filter: blur(30px);
+  opacity: 0.85;
+}
+.energy span:nth-child(even) {
+  animation-direction: reverse;
+}
+@keyframes energy-animate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

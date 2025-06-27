@@ -191,22 +191,25 @@ export default function Home() {
       <main className="relative z-10 flex flex-col min-h-screen">
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center py-20 md:py-32 gap-6 border-b border-white/10 bg-black/60 backdrop-blur-sm relative">
+          {/* Energy Ball Animation (CodePen) */}
+          <div className="w-full flex justify-center mb-8">
+            <div className="energy">
+              <span style={{ "--color": "#fbad04", "--radius": "18px", "--duration": "2.5s" } as React.CSSProperties}></span>
+              <span style={{ "--color": "#03a1d9", "--radius": "13px", "--duration": "5s" } as React.CSSProperties}></span>
+              <span style={{ "--color": "#f7036d", "--radius": "15px", "--duration": "7.5s" } as React.CSSProperties}></span>
+              <span style={{ "--color": "#93ff16", "--radius": "20px", "--duration": "10s" } as React.CSSProperties}></span>
+            </div>
+          </div>
           <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
             <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
               <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
             </h1>
-            {/* Gradient Border Glow Effect (CodePen-inspired) */}
+            {/* Gradient Glow Under Title (możesz zostawić lub usunąć) */}
             <div className="w-full flex justify-center mb-8">
               <div className="relative w-[420px] h-[16px] flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full blur-2xl opacity-80 animate-gradient-x"
-                  style={{
-                    background: 'linear-gradient(90deg, #6ec1e4, #b388ff, #f472b6, #6ec1e4)',
-                    backgroundSize: '200% 200%',
-                    filter: 'blur(12px)',
-                  }}
-                />
-                <div className="w-full h-2 rounded-full bg-gradient-to-r from-[#6ec1e4] via-[#b388ff] to-[#f472b6] opacity-60" />
+                <div className="absolute inset-0 rounded-full blur-2xl opacity-80 animate-gradient-x bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400" />
+                <div className="w-full h-2 rounded-full bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 opacity-60" />
               </div>
             </div>
             <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
@@ -227,10 +230,9 @@ export default function Home() {
               style={{ resize: 'none', fontSize: '1.15rem', background: '#181a20', color: '#fff', border: '1.5px solid #222', borderRadius: 12, outline: 'none', boxShadow: 'none', padding: '18px 16px', letterSpacing: '.01em', width: '100%' }}
             />
             <button
-              className="custom-btn bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 hover:from-pink-400 hover:to-blue-400 text-white font-bold shadow-xl border-0 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-200"
+              className="w-full text-white font-bold shadow-xl rounded-xl py-4 mt-2 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 hover:from-pink-400 hover:to-blue-400 transition-all duration-200"
               onClick={handleSearch}
               disabled={isLoading || !searchQuery.trim()}
-              style={{ width: '100%', fontSize: '1.15rem', borderRadius: 12, padding: '14px 0', marginTop: 4, letterSpacing: '.01em', cursor: isLoading ? 'not-allowed' : 'pointer' }}
             >
               {isLoading ? 'Analizuję...' : 'Analizuj'}
             </button>
