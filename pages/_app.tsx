@@ -7,6 +7,7 @@ import '../public/css/magnific-popup.css';
 // import '../public/css/owl.carousel.min.css';
 // import '../public/css/owl.theme.default.min.css';
 import '../public/css/style.css';
+import '../styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
   return <Component {...pageProps} />
