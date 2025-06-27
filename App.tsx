@@ -1,4 +1,4 @@
-// Wymuszony commit dla GitHub sync
+// test push for GitHub sync
 'use client'
 
 import React, { useState, useEffect } from 'react'
@@ -425,6 +425,8 @@ export default function App() {
     try {
       const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.
 
+WAŻNE: Odpowiadaj TYLKO w formacie czystego JSON, bez żadnych dodatkowych komentarzy, nagłówków, markdown ani tekstu. Nie dodawaj żadnych wyjaśnień, tylko JSON!
+
 Zwróć odpowiedź w formacie JSON z następującą strukturą:
 {
   "categories": [
@@ -469,7 +471,7 @@ WYMAGANIA:
 
       const output = await callReplicateAPI(systemPrompt, userPrompt, 4000)
       
-      // Handle different output formats
+      // Now: aggressively clean outputText before parsing
       let outputText = ''
       if (typeof output === 'string') {
         outputText = output
@@ -484,38 +486,18 @@ WYMAGANIA:
         throw new Error('INVALID_OUTPUT_FORMAT')
       }
 
-      console.log('📝 Processing output text:', outputText.substring(0, 300) + '...')
-
-      if (!outputText || outputText.trim().length === 0) {
-        throw new Error('EMPTY_OUTPUT')
-      }
-
+      // Now: aggressively clean outputText before parsing
+      outputText = outputText.replace(/```json|```/g, '').replace(/^[^\{]*([\{\[].*)$/, '$1').replace(/([\}\]])[^\}\]]*$/, '$1').trim();
       let aiResponse
       try {
-        const jsonMatch = outputText.match(/\{[\s\S]*\}/)
+        // Remove unsupported 's' flag and use [\s\S] for dotAll
+        const jsonMatch = outputText.match(/[\{\[][\s\S]*[\}\]]/)
         const jsonText = jsonMatch ? jsonMatch[0] : outputText
         aiResponse = JSON.parse(jsonText)
       } catch (parseError) {
         console.error('❌ JSON Parse Error:', parseError)
         console.log('📄 Raw output:', outputText)
-        
-        try {
-          let fixedText = outputText
-            .replace(/```json\s*/g, '')
-            .replace(/```\s*/g, '')
-            .replace(/^\s*[\w\s]*?(\{)/m, '$1')
-            .replace(/(\})\s*[\w\s]*?$/m, '$1')
-          
-          const jsonMatch = fixedText.match(/\{[\s\S]*\}/)
-          if (jsonMatch) {
-            aiResponse = JSON.parse(jsonMatch[0])
-          } else {
-            throw new Error('NO_JSON_FOUND')
-          }
-        } catch (secondParseError) {
-          console.error('❌ Second parse attempt failed:', secondParseError)
-          throw new Error('JSON_PARSE_ERROR')
-        }
+        throw new Error('JSON_PARSE_ERROR')
       }
 
       if (!aiResponse || !aiResponse.categories || !Array.isArray(aiResponse.categories)) {
@@ -581,6 +563,8 @@ WYMAGANIA:
     
     try {
       const systemPrompt = `Wygeneruj 2 dodatkowe zastosowania AI dla kategorii "${categoryName}" na podstawie opisu pracy użytkownika.
+
+WAŻNE: Odpowiadaj TYLKO w formacie czystego JSON, bez żadnych dodatkowych komentarzy, nagłówków, markdown ani tekstu. Nie dodawaj żadnych wyjaśnień, tylko JSON!
 
 Zwróć odpowiedź w formacie JSON:
 {
