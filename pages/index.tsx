@@ -1,3 +1,4 @@
+// test force push
 // TEST: commit sprawdzający czy push działa
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
@@ -190,34 +191,24 @@ export default function Home() {
       <main className="relative z-10 flex flex-col min-h-screen">
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center py-20 md:py-32 gap-6 border-b border-white/10 bg-black/60 backdrop-blur-sm relative">
-          {/* Energy Orb Animation */}
-          <motion.div
-            className="absolute -top-32 left-1/2 -translate-x-1/2 z-20"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: [1, 1.08, 1] }}
-            transition={{ duration: 1.2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
-          >
-            <motion.div
-              className="w-40 h-40 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-600 to-fuchsia-600 shadow-2xl blur-[2px] animate-pulse relative"
-              animate={{
-                scale: [1, 1.08, 1],
-                boxShadow: [
-                  '0 0 60px 20px #67e8f9, 0 0 120px 40px #a21caf',
-                  '0 0 80px 30px #818cf8, 0 0 160px 60px #f472b6',
-                  '0 0 60px 20px #67e8f9, 0 0 120px 40px #a21caf',
-                ],
-              }}
-              transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
-            >
-              <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
-              <div className="absolute inset-0 rounded-full bg-white/20 blur" />
-            </motion.div>
-          </motion.div>
           <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
             <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
             <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
               <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
             </h1>
+            {/* Gradient Border Glow Effect (CodePen-inspired) */}
+            <div className="w-full flex justify-center mb-8">
+              <div className="relative w-[420px] h-[16px] flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full blur-2xl opacity-80 animate-gradient-x"
+                  style={{
+                    background: 'linear-gradient(90deg, #6ec1e4, #b388ff, #f472b6, #6ec1e4)',
+                    backgroundSize: '200% 200%',
+                    filter: 'blur(12px)',
+                  }}
+                />
+                <div className="w-full h-2 rounded-full bg-gradient-to-r from-[#6ec1e4] via-[#b388ff] to-[#f472b6] opacity-60" />
+              </div>
+            </div>
             <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
               Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
             </div>
@@ -236,7 +227,7 @@ export default function Home() {
               style={{ resize: 'none', fontSize: '1.15rem', background: '#181a20', color: '#fff', border: '1.5px solid #222', borderRadius: 12, outline: 'none', boxShadow: 'none', padding: '18px 16px', letterSpacing: '.01em', width: '100%' }}
             />
             <button
-              className="custom-btn bg-gradient-to-r from-fuchsia-500 via-pink-500 to-cyan-400 hover:from-cyan-400 hover:to-fuchsia-500 text-white font-bold shadow-xl border-2 border-fuchsia-400/40 focus:outline-none focus:ring-4 focus:ring-fuchsia-400/50"
+              className="custom-btn bg-gradient-to-r from-blue-400 via-purple-500 to-pink-400 hover:from-pink-400 hover:to-blue-400 text-white font-bold shadow-xl border-0 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-200"
               onClick={handleSearch}
               disabled={isLoading || !searchQuery.trim()}
               style={{ width: '100%', fontSize: '1.15rem', borderRadius: 12, padding: '14px 0', marginTop: 4, letterSpacing: '.01em', cursor: isLoading ? 'not-allowed' : 'pointer' }}
