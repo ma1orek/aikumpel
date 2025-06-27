@@ -202,3 +202,43 @@ html {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=Inter:wght@400;600&display=swap');
+
+/* Loading bar */
+.loading-bar {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 4px;
+  background: linear-gradient(90deg,#7f5fff,#5aefff);
+  z-index: 1000;
+  transition: height 0.3s;
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  0% { opacity:0; transform:translateY(40px); }
+  100% { opacity:1; transform:translateY(0); }
+}
+
+/* Akcenty i mikrointerakcje */
+.btn-outline-light, .btn-link {
+  transition: box-shadow 0.2s, background 0.2s, color 0.2s;
+}
+.btn-outline-light:hover, .btn-link:hover {
+  color: #fff;
+  background: linear-gradient(90deg,#7f5fff,#5aefff);
+  box-shadow: 0 0 12px #7f5fff77;
+  border-color: #7f5fff;
+}
+
+textarea:focus {
+  border-color: #7f5fff !important;
+  box-shadow: 0 2px 0 #7f5fff !important;
+}
+
+/* Grid dla wyników */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(340px,1fr));
+  gap: 2.5em;
+  max-width: 1200px;
+  margin: 0 auto;
+}

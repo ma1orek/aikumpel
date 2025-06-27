@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Copy, CheckCircle, Zap, ArrowRight } from 'lucide-react';
 import Head from 'next/head';
@@ -49,11 +49,31 @@ export default function Home() {
   const [hasSearched, setHasSearched] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
+  const [loadingBar, setLoadingBar] = useState(false);
+  const [showAnalyzing, setShowAnalyzing] = useState(false);
+  const [placeholderCursor, setPlaceholderCursor] = useState(true);
+  const placeholderRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => setShowCursor(prev => !prev), 500);
     return () => clearInterval(interval);
   }, []);
+
+  // Animowany placeholder z kursorem
+  useEffect(() => {
+    if (!searchQuery) {
+      placeholderRef.current = setInterval(() => setPlaceholderCursor(c => !c), 500);
+    } else if (placeholderRef.current) {
+      clearInterval(placeholderRef.current);
+    }
+    return () => { if (placeholderRef.current) clearInterval(placeholderRef.current); };
+  }, [searchQuery]);
+
+  // Loading bar
+  useEffect(() => {
+    if (isLoading) setLoadingBar(true);
+    else setTimeout(() => setLoadingBar(false), 400);
+  }, [isLoading]);
 
   const callReplicateAPI = async (systemPrompt: string, userPrompt: string, maxTokens: number = 4000) => {
     try {
@@ -123,6 +143,7 @@ export default function Home() {
 
   const generateAIRecommendations = async (jobDescription: string) => {
     setIsLoading(true);
+    setShowAnalyzing(true);
     try {
       const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.\n\nZwróć odpowiedź w formacie JSON z następującą strukturą:\n{\n  \"categories\": [\n    {\n      \"name\": \"Nazwa kategorii\",\n      \"applications\": [\n        {\n          \"title\": \"Konkretny tytuł zastosowania (max 5 słów)\",\n          \"description\": \"Szczegółowy opis 2-3 zdania jak AI może pomóc w tym konkretnym zadaniu\",\n          \"prompt\": \"Bardzo dokładny prompt gotowy do użycia (min 200 znaków)\",\n          \"examples\": [\"Przykład 1 konkretnego zastosowania\", \"Przykład 2\", \"Przykład 3\", \"Przykład 4\", \"Przykład 5\"]\n        }\n      ]\n    }\n  ]\n}\n\nKATEGORIE (wybierz 4-6 najbardziej pasujących):\n- Automatyzacja Procesów - automatyzacja powtarzalnych zadań\n- Analiza i Raporty - analizowanie danych, tworzenie raportów  \n- Tworzenie Treści - pisanie, editing, content marketing\n- Research i Analiza - badanie rynku, konkurencji, trendów\n- Komunikacja - emaile, prezentacje, komunikacja z klientami\n- Asystent Biznesowy - organizacja, planowanie, zarządzanie czasem\n- Marketing i Sprzedaż - kampanie, lead generation, sprzedaż\n- Zarządzanie Projektami - koordynacja, monitoring, planning\n- Customer Success - obsługa klientów, retencja, sukces\n- Finanse i Księgowość - budżety, faktury, analizy finansowe\n- Design i Kreatywność - projektowanie, UX/UI, grafika\n- E-commerce - sklepy online, sprzedaż, logistyka\n\nWYMAGANIA:\n- Dla każdej kategorii podaj 2-3 zastosowania\n- Każdy prompt musi być gotowy do skopiowania i użycia\n- Przykłady muszą być bardzo konkretne i praktyczne\n- Dostosuj wszystko do branży i roli użytkownika\n- Używaj tylko języka polskiego\n- Każde zastosowanie powinno mieć 5 przykładów\n- Prompty powinny być szczegółowe i praktyczne`;
       const userPrompt = `Opis mojej pracy: ${jobDescription}`;
@@ -142,6 +163,7 @@ export default function Home() {
       } catch {
         setResults(generateSmartFallback(jobDescription));
         setIsLoading(false);
+        setShowAnalyzing(false);
         setHasSearched(true);
         return;
       }
@@ -162,6 +184,7 @@ export default function Home() {
       setResults(generateSmartFallback(jobDescription));
     }
     setIsLoading(false);
+    setShowAnalyzing(false);
     setHasSearched(true);
   };
 
@@ -186,6 +209,10 @@ export default function Home() {
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
       </Head>
+      {/* LOADING BAR */}
+      <div style={{position:'fixed',top:0,left:0,width:'100%',height:loadingBar?4:0,background:'linear-gradient(90deg,#7f5fff,#5aefff)',transition:'height 0.3s',zIndex:1000}}>
+        <div style={{width:isLoading?'60%':'100%',height:'100%',background:'linear-gradient(90deg,#7f5fff,#5aefff)',transition:'width 1.2s cubic-bezier(.4,0,.2,1)'}} />
+      </div>
       <div style={{background:'#111', minHeight:'100vh', color:'#fff', fontFamily: INTER}}>
         {/* LOGO */}
         <header className="w-100 text-center pt-5 pb-2 mb-2" style={{letterSpacing:'0.12em'}}>
@@ -201,20 +228,27 @@ export default function Home() {
           </div>
         </section>
         {/* SEARCH */}
-        <section className="d-flex flex-column align-items-center justify-content-center" style={{minHeight:'30vh', marginBottom:'2.5em'}}>
+        <section className="d-flex flex-column align-items-center justify-content-center" style={{minHeight:'30vh', marginBottom:'2.5em', maxWidth:1200, margin:'0 auto'}}>
           <div style={{width:'100%', maxWidth:540}}>
             <textarea
-              className="form-control bg-transparent text-light border-0 border-bottom border-2 rounded-0 shadow-none fs-3 px-0 mb-4"
-              style={{minHeight:70, fontSize:'1.5rem', background:'transparent', color:'#fff', borderColor:'#444', borderRadius:0, outline:'none', boxShadow:'none', resize:'vertical'}}
+              className="form-control bg-transparent text-light border-0 border-bottom border-3 rounded-0 shadow-none fs-3 px-0 mb-4"
+              style={{minHeight:70, fontSize:'1.5rem', background:'transparent', color:'#fff', borderColor:isLoading?'#7f5fff':'#444', borderRadius:0, outline:'none', boxShadow:isLoading?'0 2px 0 #7f5fff':'none', resize:'vertical', transition:'border-color 0.3s'}}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Opisz bardzo szczegółowo czym się zajmujesz w pracy..."
+              placeholder=""
             />
+            {/* Animowany placeholder z kursorem */}
+            {!searchQuery && (
+              <div style={{position:'absolute',left:16,top:10,fontSize:'1.5rem',color:'#888',pointerEvents:'none',fontFamily:INTER}}>
+                Opisz bardzo szczegółowo czym się zajmujesz w pracy...
+                <span style={{color:'#7f5fff',opacity:placeholderCursor?1:0}}>|</span>
+              </div>
+            )}
             <div className="text-end">
               <button
-                className="btn btn-outline-light px-5 py-2 fs-5 rounded-0"
-                style={{letterSpacing:'0.08em', borderWidth:2, borderColor:'#444'}}
+                className="btn px-5 py-2 fs-5 rounded-0"
+                style={{letterSpacing:'0.08em', borderWidth:2, borderColor:'#7f5fff', color:'#fff', background:'linear-gradient(90deg,#7f5fff,#5aefff)', boxShadow:isLoading?'0 0 12px #7f5fff77':'none', transition:'box-shadow 0.3s, background 0.3s'}}
                 onClick={handleSearch}
                 disabled={isLoading || !searchQuery.trim()}
               >
@@ -222,32 +256,36 @@ export default function Home() {
                 Analizuj <ArrowRight size={22} className="ms-2" />
               </button>
             </div>
+            {showAnalyzing && (
+              <div className="text-center mt-3" style={{color:'#7f5fff',fontWeight:600,letterSpacing:'.04em',fontSize:'1.1rem',transition:'opacity 0.3s'}}>Analizuję...</div>
+            )}
           </div>
         </section>
         {/* WYNIKI */}
-        <main style={{maxWidth:900, margin:'0 auto', padding:'0 1.5rem'}}>
+        <main style={{maxWidth:1200, margin:'0 auto', padding:'0 1.5rem'}}>
           {hasSearched && results.length > 0 && (
             <section>
-              {results.map((category) => (
-                <div key={category.name} style={{marginBottom:'3.5em'}}>
-                  <div style={{fontFamily: DM_SERIF, fontSize:'2.1rem', fontWeight:400, letterSpacing:'0.09em', marginBottom:'0.5em', borderBottom:'1px solid #333', paddingBottom:'0.2em', color:'#fff'}}>
+              {results.map((category, i) => (
+                <div key={category.name} style={{marginBottom:'3.5em', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i}s forwards`}}>
+                  <div style={{fontFamily: DM_SERIF, fontSize:'2.1rem', fontWeight:400, letterSpacing:'0.09em', marginBottom:'0.5em', borderBottom:'2px solid #7f5fff', paddingBottom:'0.2em', color:'#fff'}}>
                     {category.name}
                   </div>
-                  {category.applications.map((app) => (
-                    <div key={app.id} style={{marginBottom:'2.2em', paddingBottom:'1.2em', borderBottom:'1px solid #222'}}>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))',gap:'2.5em'}}>
+                  {category.applications.map((app, j) => (
+                    <div key={app.id} style={{marginBottom:'2.2em', padding:'2em 1.5em', border:'1.5px solid #222', borderRadius:18, background:'rgba(30,30,40,0.92)', boxShadow:'0 2px 16px #0002', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i+0.1*j+0.2}s forwards`}}>
                       <div style={{fontFamily: DM_SERIF, fontSize:'1.25rem', fontWeight:400, color:'#fff', marginBottom:'.3em', letterSpacing:'0.04em'}}>{app.title}</div>
                       <div style={{fontFamily: INTER, color:'#bbb', fontSize:'1.08rem', marginBottom:'.7em'}}>{app.description}</div>
                       {app.examples && app.examples.length > 0 && (
                         <ul style={{fontFamily: INTER, color:'#fff', fontSize:'1.01rem', marginBottom:'.7em', paddingLeft:'1.2em', listStyle:'disc'}}>
                           {app.examples.map((ex, idx) => (
-                            <li key={idx} style={{marginBottom:'.2em', color:'#bbb'}}>{ex}</li>
+                            <li key={idx} style={{marginBottom:'.2em', color:'#7f5fff'}}>{ex}</li>
                           ))}
                         </ul>
                       )}
                       {app.prompt && (
-                        <div style={{fontFamily: INTER, fontSize:'.98rem', color:'#fff', marginTop:'.7em', borderLeft:'2px solid #444', paddingLeft:'1em', position:'relative'}}>
-                          <span style={{fontWeight:600, color:'#fff', fontSize:'.98rem', letterSpacing:'.01em'}}>Prompt:</span>
-                          <span className="ms-2" style={{color:'#bbb'}}>{app.prompt}</span>
+                        <div style={{fontFamily: INTER, fontSize:'.98rem', color:'#fff', marginTop:'.7em', borderLeft:'2px solid #7f5fff', paddingLeft:'1em', position:'relative', background:'rgba(127,95,255,0.07)', borderRadius:8}}>
+                          <span style={{fontWeight:600, color:'#7f5fff', fontSize:'.98rem', letterSpacing:'.01em'}}>Prompt:</span>
+                          <span className="ms-2" style={{color:'#fff'}}>{app.prompt}</span>
                           <button className="btn btn-link btn-sm text-light ms-2 p-0 align-baseline" style={{textDecoration:'underline', fontSize:'.98rem'}} onClick={()=>copyPrompt(app.prompt!,app.id)}>
                             {copiedPrompt===app.id ? <CheckCircle size={16}/> : <Copy size={16}/>}
                           </button>
@@ -255,6 +293,7 @@ export default function Home() {
                       )}
                     </div>
                   ))}
+                  </div>
                 </div>
               ))}
             </section>
@@ -269,6 +308,12 @@ export default function Home() {
           Napędzane przez AI • Stworzone z ❤️ dla zwiększenia produktywności
         </footer>
       </div>
+      <style>{`
+        @keyframes fadeInUp {
+          0% { opacity:0; transform:translateY(40px); }
+          100% { opacity:1; transform:translateY(0); }
+        }
+      `}</style>
     </>
   );
 }
