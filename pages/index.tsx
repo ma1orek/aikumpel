@@ -1,6 +1,7 @@
 // TEST: commit sprawdzający czy push działa
 import React, { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
+import { motion } from 'framer-motion';
 
 // --- Typy ---
 interface AIApplication {
@@ -91,26 +92,6 @@ export default function Home() {
     }
   };
 
-  const generateSmartFallback = (jobDescription: string): AICategory[] => [{
-    name: 'Automatyzacja Procesów',
-    applications: [
-      {
-        id: 'auto-1',
-        title: 'Workflow Manager AI',
-        description: 'Automatyzuje codzienne zadania i procesy biznesowe, optymalizuje przepływ pracy i eliminuje powtarzalne czynności.',
-        category: 'Automatyzacja Procesów',
-        prompt: 'Jesteś ekspertem automatyzacji procesów biznesowych. Pomóż mi zoptymalizować mój workflow poprzez: 1) Identyfikację powtarzalnych zadań, 2) Zaprojektowanie automatycznych przepływów pracy, 3) Integrację z istniejącymi narzędziami, 4) Monitoring i optymalizację procesów, 5) Raportowanie efektywności automatyzacji.',
-        examples: [
-          'Automatyczne przekazywanie leadów między działami sprzedaży',
-          'Workflow zatwierdzania dokumentów z powiadomieniami',
-          'Automatyczne generowanie raportów okresowych',
-          'System przypomnień o terminach i deadlinach',
-          'Integracja między CRM a systemem marketingowym'
-        ]
-      }
-    ]
-  }];
-
   const generateAIRecommendations = async (jobDescription: string) => {
     setIsLoading(true);
     try {
@@ -130,7 +111,7 @@ export default function Home() {
         const jsonText = jsonMatch ? jsonMatch[0] : outputText;
         aiResponse = JSON.parse(jsonText);
       } catch {
-        setResults(generateSmartFallback(jobDescription));
+        setResults([]);
         setIsLoading(false);
         setHasSearched(true);
         return;
@@ -149,7 +130,7 @@ export default function Home() {
       }));
       setResults(transformedResults);
     } catch {
-      setResults(generateSmartFallback(jobDescription));
+      setResults([]);
     }
     setIsLoading(false);
     setHasSearched(true);
@@ -172,21 +153,78 @@ export default function Home() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'Inter, Arial, sans-serif', padding: 0, margin: 0 }}>
-      <Head>
-        <title>AIASSIST</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
-      {/* HERO SECTION */}
-      <section style={{ maxWidth: 1100, margin: '0 auto', padding: '64px 16px 32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
-          <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
-          <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
-            <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
-          </h1>
-          <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
-            Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Animated Gradient Background */}
+      <motion.div
+        aria-hidden
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background: 'linear-gradient(120deg, #18181b 0%, #23272f 50%, #1e293b 100%)',
+          minHeight: '100vh',
+        }}
+      >
+        <motion.div
+          className="absolute inset-0 w-full h-full"
+          initial={{ backgroundPosition: '0% 50%' }}
+          animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }}
+          transition={{ repeat: Infinity, duration: 16, ease: 'linear' }}
+          style={{
+            background: 'linear-gradient(120deg, #18181b 0%, #23272f 50%, #1e293b 100%)',
+            backgroundSize: '200% 200%',
+            opacity: 0.7,
+          }}
+        />
+        <motion.div
+          className="absolute left-1/2 top-1/2 w-[120vw] h-[120vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl opacity-40"
+          style={{
+            background: 'radial-gradient(circle at 60% 40%, #6366f1 0%, #a21caf 40%, transparent 80%)',
+          }}
+          animate={{ rotate: [0, 360] }}
+          transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
+        />
+      </motion.div>
+      {/* Main Content */}
+      <main className="relative z-10 flex flex-col min-h-screen">
+        {/* Hero Section */}
+        <section className="flex flex-col items-center justify-center py-20 md:py-32 gap-6 border-b border-white/10 bg-black/60 backdrop-blur-sm relative">
+          {/* Energy Orb Animation */}
+          <motion.div
+            className="absolute -top-32 left-1/2 -translate-x-1/2 z-20"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.2, repeat: Infinity, repeatType: 'loop', ease: 'easeInOut' }}
+          >
+            <motion.div
+              className="w-40 h-40 rounded-full bg-gradient-to-tr from-cyan-400 via-blue-600 to-fuchsia-600 shadow-2xl blur-[2px] animate-pulse relative"
+              animate={{
+                scale: [1, 1.08, 1],
+                boxShadow: [
+                  '0 0 60px 20px #67e8f9, 0 0 120px 40px #a21caf',
+                  '0 0 80px 30px #818cf8, 0 0 160px 60px #f472b6',
+                  '0 0 60px 20px #67e8f9, 0 0 120px 40px #a21caf',
+                ],
+              }}
+              transition={{ repeat: Infinity, duration: 6, ease: 'easeInOut' }}
+            >
+              <div className="absolute inset-0 rounded-full bg-white/10 blur-2xl" />
+              <div className="absolute inset-0 rounded-full bg-white/20 blur" />
+            </motion.div>
+          </motion.div>
+          <div style={{ width: '100%', textAlign: 'center', marginBottom: 40 }}>
+            <div style={{ fontSize: 18, color: '#b3b3b3', letterSpacing: 1, marginBottom: 16, fontWeight: 500 }}>AI ASSISTANT EXPLORER</div>
+            <h1 style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-.02em', lineHeight: 1.13, marginBottom: 16 }}>
+              <span style={{ color: '#fff' }}>Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy</span>
+            </h1>
+            <div style={{ fontSize: 20, color: '#b3b3b3', fontWeight: 400, marginBottom: 32, maxWidth: 600, margin: '0 auto 32px auto' }}>
+              Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
+            </div>
           </div>
+        </section>
+        {/* Search Section */}
+        <section className="flex flex-col items-center justify-center py-10 md:py-16 gap-4 border-b border-white/10 bg-black/50">
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, width: '100%', maxWidth: 520, margin: '0 auto' }}>
             <textarea
               className="form-control"
@@ -198,53 +236,55 @@ export default function Home() {
               style={{ resize: 'none', fontSize: '1.15rem', background: '#181a20', color: '#fff', border: '1.5px solid #222', borderRadius: 12, outline: 'none', boxShadow: 'none', padding: '18px 16px', letterSpacing: '.01em', width: '100%' }}
             />
             <button
-              className="custom-btn"
+              className="custom-btn bg-gradient-to-r from-fuchsia-500 via-pink-500 to-cyan-400 hover:from-cyan-400 hover:to-fuchsia-500 text-white font-bold shadow-xl border-2 border-fuchsia-400/40 focus:outline-none focus:ring-4 focus:ring-fuchsia-400/50"
               onClick={handleSearch}
               disabled={isLoading || !searchQuery.trim()}
-              style={{ width: '100%', fontSize: '1.15rem', fontWeight: 700, borderRadius: 12, padding: '14px 0', background: 'linear-gradient(90deg,#6ec1e4,#b388ff)', color: '#fff', border: 'none', boxShadow: isLoading ? '0 0 12px #6ec1e477' : 'none', transition: 'box-shadow 0.2s', marginTop: 4, letterSpacing: '.01em', cursor: isLoading ? 'not-allowed' : 'pointer' }}
+              style={{ width: '100%', fontSize: '1.15rem', borderRadius: 12, padding: '14px 0', marginTop: 4, letterSpacing: '.01em', cursor: isLoading ? 'not-allowed' : 'pointer' }}
             >
               {isLoading ? 'Analizuję...' : 'Analizuj'}
             </button>
           </div>
-        </div>
-      </section>
-      {/* WYNIKI AI JAKO KARTY */}
-      {hasSearched && (
-        <section style={{ maxWidth: 1200, margin: '0 auto', padding: '0 16px 64px 16px' }}>
+        </section>
+        {/* Results Section */}
+        <section className="flex flex-col items-center justify-center py-10 md:py-16 gap-8 bg-black/40">
           <div style={{ fontSize: 22, fontWeight: 700, marginBottom: 32, color: '#fff', letterSpacing: '.01em' }}>Twoje spersonalizowane zastosowania AI</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
-            {results.length === 0 && (
-              <div style={{ color: '#bbb', fontSize: 18, padding: 32, background: '#181a20', borderRadius: 16, textAlign: 'center' }}>Brak wyników. Spróbuj opisać swoją pracę inaczej.</div>
-            )}
-            {results.map((cat, i) => (
-              <div key={cat.name} style={{ marginBottom: 0 }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: '#fff', marginBottom: 16, letterSpacing: '.01em' }}>{cat.name}</div>
-                {cat.applications.map((app, j) => (
-                  <div key={app.id} style={{ background: '#fff', borderRadius: 18, boxShadow: '0 2px 16px #0002', padding: '28px 24px 22px 24px', marginBottom: 24, minHeight: 180, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderLeft: `6px solid #6ec1e4`, backgroundImage: pastelCards[(i + j) % pastelCards.length], color: '#181a20', position: 'relative' }}>
-                    <div style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, letterSpacing: '-.01em', lineHeight: 1.18 }}>{app.title}</div>
-                    <div style={{ fontSize: 16, fontWeight: 400, marginBottom: 10 }}>{app.description}</div>
-                    <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 8 }}><span style={{ color: '#6ec1e4', fontWeight: 700 }}>Prompt:</span> {app.prompt}</div>
-                    <button
-                      className="custom-btn"
-                      style={{ fontSize: 13, padding: '6px 18px', borderRadius: 8, background: '#181a20', color: '#fff', border: 'none', fontWeight: 700, marginTop: 8, alignSelf: 'flex-end', cursor: 'pointer' }}
-                      onClick={() => copyPrompt(app.prompt || '', app.id)}
-                    >
-                      {copiedPrompt === app.id ? 'Skopiowano!' : 'Kopiuj prompt'}
-                    </button>
-                    {app.examples && app.examples.length > 0 && (
-                      <ul style={{ fontSize: 14, margin: '14px 0 0 0', paddingLeft: 18, color: '#23242a', opacity: 0.85 }}>
-                        {app.examples.map((ex, idx) => (
-                          <li key={idx}>{ex}</li>
-                        ))}
-                      </ul>
-                    )}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 40, width: '100%', maxWidth: 1200 }}>
+            {results.map((category, idx) => (
+              <div key={category.name} className="rounded-2xl bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-2xl border-2 border-fuchsia-400/20 p-8 flex flex-col gap-6 relative overflow-hidden mb-8">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="w-3 h-3 rounded-full bg-gradient-to-r from-fuchsia-400 to-cyan-400" />
+                  <span className="font-semibold text-lg text-white drop-shadow">{category.name}</span>
+                </div>
+                {/* PROMPT BOX */}
+                <div className="rounded-xl bg-gradient-to-r from-fuchsia-700/80 to-cyan-700/80 p-4 text-white font-mono text-base shadow-inner mb-2 border border-fuchsia-400/30">
+                  <div className="font-bold text-xs mb-1 text-fuchsia-200 uppercase tracking-wider">Prompt do AI</div>
+                  <div className="whitespace-pre-line break-words">{category.applications[0]?.prompt}</div>
+                  <button onClick={() => copyPrompt(category.applications[0]?.prompt || '', category.applications[0]?.id || '')} className={`mt-2 px-3 py-1 rounded bg-fuchsia-600 hover:bg-cyan-500 text-xs font-semibold text-white transition-all ${copiedPrompt === category.applications[0]?.id ? 'opacity-60' : ''}`}>{copiedPrompt === category.applications[0]?.id ? 'Skopiowano!' : 'Kopiuj prompt'}</button>
+                </div>
+                {/* BULLETPOINTS/EXAMPLES */}
+                <ul className="list-disc pl-6 space-y-1 text-white/90 text-base">
+                  {category.applications[0]?.examples?.map((ex, i) => (
+                    <li key={i}>{ex}</li>
+                  ))}
+                </ul>
+                {/* Pozostałe aplikacje (jeśli są) */}
+                {category.applications.slice(1).map((app, i) => (
+                  <div key={app.id} className="mt-6 pt-4 border-t border-white/10">
+                    <div className="font-semibold text-fuchsia-300 mb-1">{app.title}</div>
+                    <div className="text-white/80 mb-2 text-base">{app.description}</div>
+                    <div className="rounded bg-zinc-900/80 p-3 text-xs text-fuchsia-200 font-mono mb-2">{app.prompt}</div>
+                    <ul className="list-disc pl-6 space-y-1 text-white/80 text-xs">
+                      {app.examples?.map((ex, j) => (
+                        <li key={j}>{ex}</li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
             ))}
           </div>
         </section>
-      )}
+      </main>
     </div>
   );
 }
