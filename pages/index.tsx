@@ -140,7 +140,7 @@ export default function Home() {
     setIsLoading(true);
     setShowAnalyzing(true);
     try {
-      const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.\n\nZwróć odpowiedź w formacie JSON z następującą strukturą:\n{\n  \"categories\": [\n    {\n      \"name\": \"Nazwa kategorii\",\n      \"applications\": [\n        {\n          \"title\": \"Konkretny tytuł zastosowania (max 5 słów)\",\n          \"description\": \"Szczegółowy opis 2-3 zdania jak AI może pomóc w tym konkretnym zadaniu\",\n          \"prompt\": \"Bardzo dokładny prompt gotowy do użycia (min 200 znaków)\",\n          \"examples\": [\"Przykład 1 konkretnego zastosowania\", \"Przykład 2\", \"Przykład 3\", \"Przykład 4\", \"Przykład 5\"]\n        }\n      ]\n    }\n  ]\n}\n\nKATEGORIE (wybierz 4-6 najbardziej pasujących):\n- Automatyzacja Procesów - automatyzacja powtarzalnych zadań\n- Analiza i Raporty - analizowanie danych, tworzenie raportów  \n- Tworzenie Treści - pisanie, editing, content marketing\n- Research i Analiza - badanie rynku, konkurencji, trendów\n- Komunikacja - emaile, prezentacje, komunikacja z klientami\n- Asystent Biznesowy - organizacja, planowanie, zarządzanie czasem\n- Marketing i Sprzedaż - kampanie, lead generation, sprzedaż\n- Zarządzanie Projektami - koordynacja, monitoring, planning\n- Customer Success - obsługa klientów, retencja, sukces\n- Finanse i Księgowość - budżety, faktury, analizy finansowe\n- Design i Kreatywność - projektowanie, UX/UI, grafika\n- E-commerce - sklepy online, sprzedaż, logistyka\n\nWYMAGANIA:\n- Dla każdej kategorii podaj 2-3 zastosowania\n- Każdy prompt musi być gotowy do skopiowania i użycia\n- Przykłady muszą być bardzo konkretne i praktyczne\n- Dostosuj wszystko do branży i roli użytkownika\n- Używaj tylko języka polskiego\n- Każde zastosowanie powinno mieć 5 przykładów\n- Prompty powinny być szczegółowe i praktyczne`;
+      const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.\n\nZwróć odpowiedź w formacie JSON z następującą strukturą:\n{\n  "categories": [\n    {\n      "name": "Nazwa kategorii",\n      "applications": [\n        {\n          "title": "Konkretny tytuł zastosowania (max 5 słów)",\n          "description": "Szczegółowy opis 2-3 zdania jak AI może pomóc w tym konkretnym zadaniu",\n          "prompt": "Bardzo dokładny prompt gotowy do użycia (min 200 znaków)",\n          "examples": ["Przykład 1 konkretnego zastosowania", "Przykład 2", "Przykład 3", "Przykład 4", "Przykład 5"]\n        }\n      ]\n    }\n  ]\n}\n\nKATEGORIE (wybierz 4-6 najbardziej pasujących):\n- Automatyzacja Procesów - automatyzacja powtarzalnych zadań\n- Analiza i Raporty - analizowanie danych, tworzenie raportów  \n- Tworzenie Treści - pisanie, editing, content marketing\n- Research i Analiza - badanie rynku, konkurencji, trendów\n- Komunikacja - emaile, prezentacje, komunikacja z klientami\n- Asystent Biznesowy - organizacja, planowanie, zarządzanie czasem\n- Marketing i Sprzedaż - kampanie, lead generation, sprzedaż\n- Zarządzanie Projektami - koordynacja, monitoring, planning\n- Customer Success - obsługa klientów, retencja, sukces\n- Finanse i Księgowość - budżety, faktury, analizy finansowe\n- Design i Kreatywność - projektowanie, UX/UI, grafika\n- E-commerce - sklepy online, sprzedaż, logistyka\n\nWYMAGANIA:\n- Dla każdej kategorii podaj 2-3 zastosowania\n- Każdy prompt musi być gotowy do skopiowania i użycia\n- Przykłady muszą być bardzo konkretne i praktyczne\n- Dostosuj wszystko do branży i roli użytkownika\n- Używaj tylko języka polskiego\n- Każde zastosowanie powinno mieć 5 przykładów\n- Prompty powinny być szczegółowe i praktyczne`;
       const userPrompt = `Opis mojej pracy: ${jobDescription}`;
       const output = await callReplicateAPI(systemPrompt, userPrompt, 4000);
       let outputText = '';
@@ -200,116 +200,137 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div id="colorlib-page">
       <Head>
-        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+        <title>AIASSIST</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <div style={{background:'#181a20', minHeight:'100vh', width:'100vw', padding:'48px 0', display:'flex', justifyContent:'center', alignItems:'flex-start'}}>
-        <div style={{background:'#23242a', borderRadius:32, boxShadow:'0 8px 48px #0004', width:'100%', maxWidth:1280, minHeight:700, padding:'48px 56px 40px 56px', display:'flex', flexDirection:'column', gap:40}}>
-          {/* HEADER */}
-          <header style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:32}}>
-            <div style={{display:'flex', alignItems:'center', gap:16}}>
-              <div style={{fontFamily: DM_SERIF, fontSize:'2rem', fontWeight:600, letterSpacing:'0.14em', color:'#fff', background:'#2e2f38', borderRadius:16, padding:'8px 24px'}}>AIASSIST</div>
-              <nav style={{display:'flex', gap:32, marginLeft:32}}>
-                <a href="#" style={{color:'#bbb', fontFamily:INTER, fontWeight:500, fontSize:'1.08rem', textDecoration:'none', letterSpacing:'.01em'}}>Overview</a>
-                <a href="#" style={{color:'#bbb', fontFamily:INTER, fontWeight:500, fontSize:'1.08rem', textDecoration:'none', letterSpacing:'.01em'}}>Learn</a>
-                <a href="#" style={{color:'#bbb', fontFamily:INTER, fontWeight:500, fontSize:'1.08rem', textDecoration:'none', letterSpacing:'.01em'}}>Support</a>
-              </nav>
-            </div>
-            <div style={{display:'flex', alignItems:'center', gap:16}}>
-              <button className="btn" style={{background:'#23242a', color:'#fff', border:'1.5px solid #333', borderRadius:12, fontWeight:500, fontSize:'1.05rem', padding:'7px 22px'}}>Zaloguj</button>
-            </div>
-          </header>
-          {/* SEARCH CARD */}
-          <section style={{background:'#23242a', borderRadius:24, boxShadow:'0 2px 16px #0002', padding:'40px 32px 32px 32px', maxWidth:520, margin:'0 auto', width:'100%', display:'flex', flexDirection:'column', alignItems:'center', gap:24}}>
-            <h1 style={{fontFamily: DM_SERIF, fontSize:'2.1rem', fontWeight:600, color:'#fff', marginBottom:8, letterSpacing:'.04em', textAlign:'center'}}>W czym może pomóc Ci AI?</h1>
-            <div style={{fontFamily: INTER, fontSize:'1.08rem', color:'#bbb', fontWeight:400, marginBottom:0, letterSpacing:'.01em', textAlign:'center', maxWidth:420}}>
-              Opisz szczegółowo czym się zajmujesz w pracy, a otrzymasz spersonalizowaną listę konkretnych zastosowań AI assistentów z gotowymi promptami
-            </div>
-            <div style={{width:'100%', position:'relative', marginTop:24}}>
-              <textarea
-                className="form-control bg-transparent text-light border-0 border-bottom border-2 rounded-0 shadow-none fs-3 px-0 mb-4"
-                style={{minHeight:60, fontSize:'1.1rem', background:'transparent', color:'#fff', borderColor:'#444', borderRadius:0, outline:'none', boxShadow:'none', resize:'vertical', textAlign:'center', padding:'18px 0', marginBottom:24, fontFamily:INTER, letterSpacing:'.01em'}}
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder=""
-              />
-              {/* Animowany placeholder z kursorem */}
-              {!searchQuery && (
-                <div style={{position:'absolute',left:0,top:18,width:'100%',textAlign:'center',fontSize:'1.1rem',color:'#888',pointerEvents:'none',fontFamily:INTER}}>
-                  Opisz bardzo szczegółowo czym się zajmujesz w pracy...
-                  <span style={{color:'#7f5fff',opacity:placeholderCursor?1:0}}>|</span>
-                </div>
-              )}
-              <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop:16}}>
-                <button
-                  className="btn px-5 py-2 fs-5 rounded-0"
-                  style={{letterSpacing:'0.08em', borderWidth:2, borderColor:'#7f5fff', color:'#fff', background:'linear-gradient(90deg,#e0f2fe,#f3e8ff)', borderStyle:'solid', borderRadius:8, transition:'border-color 0.2s, color 0.2s', fontWeight:500, boxShadow:isLoading?'0 0 12px #7f5fff77':'none'}}
-                  onClick={handleSearch}
-                  disabled={isLoading || !searchQuery.trim()}
-                >
-                  {isLoading ? <span className="spinner-border spinner-border-sm me-2" /> : <Zap size={22} className="me-2" />}
-                  Analizuj <ArrowRight size={22} className="ms-2" />
-                </button>
+      <a href="#" className="js-colorlib-nav-toggle colorlib-nav-toggle"><i /></a>
+      <aside id="colorlib-aside" role="complementary" className="js-fullheight">
+        <h1 id="colorlib-logo" className="mb-4 mb-md-5">
+          <a href="/" style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}>AIASSIST</a>
+        </h1>
+        <nav id="colorlib-main-menu" role="navigation">
+          <ul>
+            <li className="colorlib-active"><a href="#">Home</a></li>
+            <li><a href="#">Learn</a></li>
+            <li><a href="#">Support</a></li>
+          </ul>
+        </nav>
+        <div className="colorlib-footer">
+          <div className="mb-4">
+            <h3>Subscribe for newsletter</h3>
+            <form action="#" className="colorlib-subscribe-form">
+              <div className="form-group d-flex">
+                <div className="icon"><span className="icon-paper-plane" /></div>
+                <input type="text" className="form-control" placeholder="Enter Email Address" />
               </div>
-              {showAnalyzing && (
-                <div className="text-center mt-3" style={{color:'#7f5fff',fontWeight:600,letterSpacing:'.04em',fontSize:'1.1rem',transition:'opacity 0.3s'}}>Analizuję...</div>
-              )}
-            </div>
-          </section>
-          {/* WYNIKI GRID */}
-          <main style={{width:'100%', maxWidth:1200, margin:'0 auto', padding:'0', marginTop:24}}>
-            {hasSearched && results.length > 0 && (
-              <section style={{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(420px,1fr))', gap:32, width:'100%'}}>
-                {results.map((category, i) => (
-                  <div key={category.name} style={{background:pastelCards[i%pastelCards.length], borderRadius:24, boxShadow:'0 2px 16px #0001', padding:'32px 28px 28px 28px', display:'flex', flexDirection:'column', gap:24, minHeight:320, animation:`fadeInUp 0.7s ${0.2*i}s forwards`, opacity:0, transform:'translateY(40px)'}}>
-                    <div style={{fontFamily: DM_SERIF, fontSize:'1.5rem', fontWeight:600, color:'#23242a', marginBottom:8, letterSpacing:'.04em'}}>{category.name}</div>
-                    <div style={{display:'grid', gridTemplateColumns:'1fr', gap:24}}>
-                      {category.applications.map((app, j) => (
-                        <div key={app.id} style={{background:'#fff', borderRadius:16, boxShadow:'0 1px 8px #0001', padding:'20px 18px', display:'flex', flexDirection:'column', gap:12, animation:`fadeInUp 0.7s ${0.2*i+0.1*j+0.2}s forwards`, opacity:0, transform:'translateY(40px)'}}>
-                          <div style={{fontFamily: DM_SERIF, fontSize:'1.1rem', fontWeight:600, color:'#23242a', marginBottom:4, letterSpacing:'.02em'}}>{app.title}</div>
-                          <div style={{fontFamily: INTER, color:'#444', fontSize:'.99rem', marginBottom:6}}>{app.description}</div>
-                          {app.examples && app.examples.length > 0 && (
-                            <ul style={{fontFamily: INTER, color:'#7f5fff', fontSize:'.97rem', marginBottom:4, paddingLeft:18, listStyle:'disc'}}>
-                              {app.examples.map((ex, idx) => (
-                                <li key={idx} style={{marginBottom:'.2em'}}>{ex}</li>
-                              ))}
-                            </ul>
-                          )}
-                          {app.prompt && (
-                            <div style={{fontFamily: INTER, fontSize:'.97rem', color:'#23242a', marginTop:4, borderLeft:'2px solid #7f5fff', paddingLeft:'1em', background:'#f3e8ff22', borderRadius:6, display:'flex', alignItems:'center', gap:8}}>
-                              <span style={{fontWeight:600, color:'#7f5fff', fontSize:'.97rem', letterSpacing:'.01em'}}>Prompt:</span>
-                              <span className="ms-2" style={{color:'#23242a'}}>{app.prompt}</span>
-                              <button className="btn btn-link btn-sm text-dark ms-2 p-0 align-baseline" style={{textDecoration:'underline', fontSize:'.97rem'}} onClick={()=>copyPrompt(app.prompt!,app.id)}>
-                                {copiedPrompt===app.id ? <CheckCircle size={16}/> : <Copy size={16}/>}
-                              </button>
-                            </div>
-                          )}
+            </form>
+          </div>
+          <p className="pfooter">
+            Napędzane przez AI • Stworzone z <span style={{ color: 'red' }}>❤</span> dla zwiększenia produktywności
+          </p>
+        </div>
+      </aside>
+      <div id="colorlib-main">
+        <section className="ftco-section ftco-no-pt ftco-no-pb">
+          <div className="container px-md-0">
+            <div className="row d-flex no-gutters">
+              <div className="col-md-12 portfolio-wrap">
+                <div className="row no-gutters align-items-center">
+                  <div className="col-md-12">
+                    <div className="text pt-5 pl-0 px-lg-5 pl-md-4 ftco-animate">
+                      <div className="px-4 px-lg-4">
+                        <div className="desc">
+                          <div className="top">
+                            <span className="subheading">AI Assistant Explorer</span>
+                            <h2 className="mb-4">W czym może pomóc Ci AI?</h2>
+                          </div>
+                          <div className="absolute">
+                            <p>Opisz szczegółowo czym się zajmujesz w pracy, a otrzymasz spersonalizowaną listę konkretnych zastosowań AI assistantów z gotowymi promptami</p>
+                          </div>
+                          <div className="form-group mt-4">
+                            <textarea
+                              className="form-control"
+                              placeholder="Opisz bardzo szczegółowo czym się zajmujesz w pracy..."
+                              value={searchQuery}
+                              onChange={e => setSearchQuery(e.target.value)}
+                              onKeyDown={handleKeyPress}
+                              rows={3}
+                              style={{ resize: 'none' }}
+                            />
+                          </div>
+                          <div className="form-group mt-3">
+                            <button
+                              className="custom-btn"
+                              onClick={handleSearch}
+                              disabled={isLoading || !searchQuery.trim()}
+                            >
+                              {isLoading ? 'Analizuję...' : 'Analizuj'}
+                            </button>
+                          </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
                   </div>
-                ))}
-              </section>
-            )}
-            {!hasSearched && (
-              <div className="text-center text-secondary py-5" style={{fontFamily:INTER, color:'#666', fontSize:'1.1rem'}}>
-                Wpisz opis swojej pracy powyżej, aby AI wygenerował spersonalizowane rozwiązania
+                </div>
               </div>
-            )}
-          </main>
-          <footer className="text-center py-4 mt-5" style={{color:'#bbb', fontFamily:INTER, fontSize:'.98rem', letterSpacing:'.04em', borderTop:'1px solid #23242a'}}>
-            Napędzane przez AI • Stworzone z ❤️ dla zwiększenia produktywności
-          </footer>
-        </div>
+              {hasSearched && (
+                <div className="col-md-12 portfolio-wrap mt-5">
+                  <div className="row no-gutters align-items-center">
+                    <div className="col-md-12">
+                      <div className="text pt-5 pl-0 px-lg-5 pl-md-4 ftco-animate">
+                        <div className="px-4 px-lg-4">
+                          <div className="desc">
+                            <div className="top">
+                              <span className="subheading">Wyniki AI</span>
+                              <h2 className="mb-4">Twoje spersonalizowane zastosowania AI</h2>
+                            </div>
+                            <div className="absolute">
+                              {results.length === 0 && (
+                                <p>Brak wyników. Spróbuj opisać swoją pracę inaczej.</p>
+                              )}
+                              {results.map((cat, i) => (
+                                <div key={cat.name} className="mb-5">
+                                  <h3 className="mb-3">{cat.name}</h3>
+                                  {cat.applications.map(app => (
+                                    <div key={app.id} className="mb-4 p-4" style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
+                                      <h4 className="mb-2">{app.title}</h4>
+                                      <p className="mb-2">{app.description}</p>
+                                      <div className="mb-2">
+                                        <strong>Prompt:</strong>
+                                        <span style={{ wordBreak: 'break-all', display: 'block', marginTop: 4 }}>{app.prompt}</span>
+                                        <button
+                                          className="custom-btn mt-2"
+                                          style={{ fontSize: 12, padding: '4px 12px' }}
+                                          onClick={() => copyPrompt(app.prompt || '', app.id)}
+                                        >
+                                          {copiedPrompt === app.id ? 'Skopiowano!' : 'Kopiuj prompt'}
+                                        </button>
+                                      </div>
+                                      {app.examples && app.examples.length > 0 && (
+                                        <ul className="mb-0" style={{ fontSize: 14 }}>
+                                          {app.examples.map((ex, idx) => (
+                                            <li key={idx}>{ex}</li>
+                                          ))}
+                                        </ul>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       </div>
-      <style>{`
-        @keyframes fadeInUp {
-          0% { opacity:0; transform:translateY(40px); }
-          100% { opacity:1; transform:translateY(0); }
-        }
-      `}</style>
-    </>
+    </div>
   );
 }
