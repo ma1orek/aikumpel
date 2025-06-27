@@ -398,7 +398,7 @@ export default function Home() {
                                 {copiedPrompt===app.id ? <CheckCircle size={18}/> : <Copy size={18}/>}
                               </button>
                             </div>
-                            <div className="bg-black rounded-3 p-3 text-light small font-monospace border border-light-subtle">"{app.prompt}"</div>
+                            <div className="bg-black rounded-3 p-3 text-light small font-monospace border border-light-subtle">&quot;{app.prompt}&quot;</div>
                           </div>
                         )}
                       </div>
