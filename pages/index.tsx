@@ -154,47 +154,53 @@ export default function Home() {
   };
 
   return (
-    <div data-theme="dark">
+    <div className="min-h-screen bg-gradient-to-br from-[#0f111a] via-[#181c26] to-[#10131a] text-white">
       <Head>
         <title>AI Assistant Explorer</title>
         <meta name="description" content="Odkryj, jak AI może pomóc w Twojej pracy" />
       </Head>
-      {/* LOGO */}
-      <section className="section" style={{ paddingBottom: 0 }}>
-        <div className="container has-text-centered">
-          <img src="/images/logo.png" alt="Logo" style={{ width: 90, margin: '0 auto 18px auto', display: 'block' }} />
-          <h1 className="title is-1 has-text-weight-bold has-text-white" style={{ fontSize: '3.5rem', letterSpacing: '-.03em', marginBottom: 12 }}>AI ASSISTANT EXPLORER</h1>
-          <p className="subtitle is-4 has-text-grey-light" style={{ fontSize: 22, marginBottom: 18 }}>
-            Odkryj, jak AI może <span style={{ color: '#6ec1e4', fontStyle: 'italic', fontWeight: 700 }}>pomóc</span> w Twojej pracy
-          </p>
-          <p className="has-text-grey-light" style={{ fontSize: 18, marginBottom: 32, maxWidth: 600, margin: '0 auto' }}>
-            Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.
-          </p>
-          {/* WYSZUKIWARKA */}
-          <div className="field has-addons is-justify-content-center" style={{ maxWidth: 520, margin: '0 auto' }}>
-            <div className="control is-expanded">
-              <input
-                className="input is-medium"
-                type="text"
-                placeholder="Wyszukaj..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyPress}
-                style={{ background: '#181a20', color: '#fff', borderRadius: 12, outline: 'none', boxShadow: 'none', letterSpacing: '.01em', width: '100%' }}
-              />
-            </div>
-            <div className="control">
-              <button
-                className={`button is-primary is-medium has-text-weight-bold${isLoading || !searchQuery.trim() ? ' is-loading' : ''}`}
-                onClick={handleSearch}
-                disabled={isLoading || !searchQuery.trim()}
-                style={{ minWidth: 120 }}
-              >
-                {isLoading ? 'Analizuję...' : 'Analizuj'}
-              </button>
-            </div>
-          </div>
+      {/* NAVBAR/LOGO */}
+      <nav className="flex items-center justify-between px-8 py-6 border-b border-white/10">
+        <div className="flex items-center gap-3">
+          <img src="/images/logo.png" alt="Logo" className="h-10 w-10 object-contain" />
+          <span className="text-2xl font-bold tracking-tight">AI Assistant Explorer</span>
         </div>
+        <div className="flex items-center gap-4">
+          <button className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition">Sign up</button>
+        </div>
+      </nav>
+      {/* HERO SECTION */}
+      <section className="max-w-4xl mx-auto flex flex-col items-center text-center pt-20 pb-16 px-4">
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent mb-6 drop-shadow-xl">Blending <span className="text-blue-400">AI</span> and <span className="text-fuchsia-400">Human</span> Precision</h1>
+        <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl">Odkryj, jak AI może <span className="text-blue-400 font-semibold italic">pomóc</span> w Twojej pracy. Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.</p>
+        <form className="w-full flex flex-col sm:flex-row gap-4 items-center justify-center mt-4" onSubmit={e => {e.preventDefault();}}>
+          <input
+            className="flex-1 px-6 py-4 rounded-xl bg-[#181c26] border border-white/10 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            type="text"
+            placeholder="Wyszukaj lub opisz swoją pracę..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          <button
+            className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 via-fuchsia-500 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-105 hover:from-pink-500 hover:to-blue-500 transition-all duration-200"
+            type="submit"
+            disabled={isLoading || !searchQuery.trim()}
+          >
+            {isLoading ? 'Analizuję...' : 'Analizuj'}
+          </button>
+        </form>
+      </section>
+      {/* FEATURE CARDS (placeholder, możesz podmienić na wyniki AI) */}
+      <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 pb-24">
+        {[1,2,3,4].map((i) => (
+          <div key={i} className="rounded-2xl bg-gradient-to-br from-[#181c26] to-[#23263a] border border-white/10 shadow-xl p-8 flex flex-col items-start gap-4 hover:scale-[1.03] transition-all">
+            <div className="bg-white/10 p-3 rounded-xl mb-2">
+              <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#6ec1e4" strokeWidth="2" fill="none" /></svg>
+            </div>
+            <h3 className="text-xl font-bold mb-1">Funkcja {i}</h3>
+            <p className="text-gray-400">Opis funkcji lub zastosowania AI. Możesz podmienić na dynamiczne wyniki.</p>
+          </div>
+        ))}
       </section>
       {/* ENERGY BALL */}
       <div className="mb-6" style={{ display: 'flex', justifyContent: 'center' }}>
