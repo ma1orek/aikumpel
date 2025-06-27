@@ -154,110 +154,73 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f111a] via-[#181c26] to-[#10131a] text-white">
+    <div className="min-h-screen bg-[#20407b] text-white flex flex-col items-center px-2">
       <Head>
-        <title>AI Assistant Explorer</title>
-        <meta name="description" content="Odkryj, jak AI może pomóc w Twojej pracy" />
+        <title>AIKUMPEL</title>
+        <meta name="description" content="KUMPLU, JAK AI MOŻE POMÓC MI W MOJEJ PRACY?" />
       </Head>
-      {/* NAVBAR/LOGO */}
-      <nav className="flex items-center justify-between px-8 py-6 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <img src="/images/logo.png" alt="Logo" className="h-10 w-10 object-contain" />
-          <span className="text-2xl font-bold tracking-tight">AI Assistant Explorer</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition">Sign up</button>
-        </div>
-      </nav>
-      {/* HERO SECTION */}
-      <section className="max-w-4xl mx-auto flex flex-col items-center text-center pt-20 pb-16 px-4">
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-white via-gray-300 to-gray-400 bg-clip-text text-transparent mb-6 drop-shadow-xl">Blending <span className="text-blue-400">AI</span> and <span className="text-fuchsia-400">Human</span> Precision</h1>
-        <p className="text-xl md:text-2xl text-gray-300 mb-6 max-w-2xl">Odkryj, jak AI może <span className="text-blue-400 font-semibold italic">pomóc</span> w Twojej pracy. Opisz czym się zajmujesz, a AI wygeneruje dla Ciebie gotowe zastosowania i prompty do pracy.</p>
-        <form className="w-full flex flex-col sm:flex-row gap-4 items-center justify-center mt-4" onSubmit={e => {e.preventDefault();}}>
+      {/* LOGO */}
+      <header className="w-full flex justify-center pt-8 pb-2">
+        <img src="/aikumpel-logo.png" alt="AIKUMPEL" className="h-8 md:h-10" style={{maxWidth: 180}} />
+      </header>
+      {/* HERO */}
+      <section className="w-full max-w-3xl flex flex-col items-center text-center mb-8">
+        <h1 className="font-archivo text-3xl md:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#b3d1ff] leading-tight mb-4 animate-fadein">
+          KUMPLU, JAK AI MOŻE POMÓC<br className="hidden md:block"/> MI W MOJEJ PRACY?
+        </h1>
+        <p className="font-archivo text-base md:text-lg font-bold uppercase text-[#b3d1ff] mb-2 animate-fadein2">
+          OPIESZ CZYM SIĘ ZAJMUJESZ, A AI WYGENERUJE DLA CIEBIE GOTOWE ZASTOSOWANIA I PROMPTY DO WYKORZYSTANIA W TWOJEJ PRACY.
+        </p>
+        {/* SEARCH BAR */}
+        <form className="w-full flex flex-col md:flex-row items-center gap-2 mt-4 animate-fadein3" onSubmit={e => e.preventDefault()}>
           <input
-            className="flex-1 px-6 py-4 rounded-xl bg-[#181c26] border border-white/10 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+            className="flex-1 px-6 py-4 rounded-lg border border-[#b3d1ff] bg-transparent text-lg font-bold text-[#b3d1ff] placeholder-[#b3d1ff] font-archivo outline-none focus:ring-2 focus:ring-[#b3d1ff] transition"
             type="text"
-            placeholder="Wyszukaj lub opisz swoją pracę..."
+            placeholder="OPISZ TUTAJ CZYM SIĘ ZAJMUJESZ..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
           <button
-            className="px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 via-fuchsia-500 to-pink-500 text-white font-bold text-lg shadow-lg hover:scale-105 hover:from-pink-500 hover:to-blue-500 transition-all duration-200"
+            className="px-8 py-4 rounded-lg border border-[#b3d1ff] bg-[#20407b] text-[#b3d1ff] font-black font-archivo text-lg uppercase tracking-wider flex items-center gap-2 hover:bg-[#2a4a8c] transition"
             type="submit"
             disabled={isLoading || !searchQuery.trim()}
           >
-            {isLoading ? 'Analizuję...' : 'Analizuj'}
+            ANALIZUJ <span className="text-2xl leading-none">+</span>
           </button>
         </form>
       </section>
-      {/* FEATURE CARDS (placeholder, możesz podmienić na wyniki AI) */}
-      <section className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 pb-24">
-        {[1,2,3,4].map((i) => (
-          <div key={i} className="rounded-2xl bg-gradient-to-br from-[#181c26] to-[#23263a] border border-white/10 shadow-xl p-8 flex flex-col items-start gap-4 hover:scale-[1.03] transition-all">
-            <div className="bg-white/10 p-3 rounded-xl mb-2">
-              <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#6ec1e4" strokeWidth="2" fill="none" /></svg>
-            </div>
-            <h3 className="text-xl font-bold mb-1">Funkcja {i}</h3>
-            <p className="text-gray-400">Opis funkcji lub zastosowania AI. Możesz podmienić na dynamiczne wyniki.</p>
-          </div>
-        ))}
-      </section>
-      {/* ENERGY BALL */}
-      <div className="mb-6" style={{ display: 'flex', justifyContent: 'center' }}>
-        <div className="energy">
-          <span style={{ "--color": "#fbad04", "--radius": "18px", "--duration": "2.5s" } as React.CSSProperties}></span>
-          <span style={{ "--color": "#03a1d9", "--radius": "13px", "--duration": "5s" } as React.CSSProperties}></span>
-          <span style={{ "--color": "#f7036d", "--radius": "15px", "--duration": "7.5s" } as React.CSSProperties}></span>
-          <span style={{ "--color": "#93ff16", "--radius": "20px", "--duration": "10s" } as React.CSSProperties}></span>
-        </div>
-      </div>
-      {/* RESULTS SECTION */}
-      <section className="section" style={{ background: '#181a20' }}>
-        <div className="container">
-          <h2 className="title is-3 has-text-white has-text-centered" style={{ marginBottom: 40 }}>Twoje spersonalizowane zastosowania AI</h2>
-          <div className="columns is-multiline is-variable is-8">
-            {results.map((category, idx) => (
-              <div key={category.name} className="column is-6-tablet is-4-desktop">
-                <div className="card" style={{ borderRadius: 18, boxShadow: '0 4px 32px 0 #a21caf22', background: idx % 3 === 0 ? '#23272f' : idx % 3 === 1 ? '#1a1d23' : '#20243a' }}>
-                  <header className="card-header" style={{ borderBottom: '1px solid #a21caf33', background: 'transparent' }}>
-                    <p className="card-header-title has-text-white" style={{ fontWeight: 700 }}>
-                      <span className="tag is-info is-light" style={{ marginRight: 12 }}></span>
-                      {category.name}
-                    </p>
-                  </header>
-                  <div className="card-content">
-                    {/* PROMPT BOX */}
-                    <div className="notification is-link is-light" style={{ borderRadius: 12, background: '#2d3748', color: '#fff', marginBottom: 16 }}>
-                      <div className="is-size-7 has-text-weight-bold has-text-info mb-2">Prompt do AI</div>
-                      <div className="is-family-monospace" style={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}>{category.applications[0]?.prompt}</div>
-                      <button onClick={() => copyPrompt(category.applications[0]?.prompt || '', category.applications[0]?.id || '')} className={`button is-small is-info mt-2${copiedPrompt === category.applications[0]?.id ? ' is-light' : ''}`}>{copiedPrompt === category.applications[0]?.id ? 'Skopiowano!' : 'Kopiuj prompt'}</button>
-                    </div>
-                    {/* BULLETPOINTS/EXAMPLES */}
-                    <ul className="has-text-white is-size-6" style={{ paddingLeft: 20, marginBottom: 0 }}>
-                      {category.applications[0]?.examples?.map((ex, i) => (
-                        <li key={i} style={{ marginBottom: 4 }}>{ex}</li>
-                      ))}
-                    </ul>
-                    {/* Pozostałe aplikacje (jeśli są) */}
-                    {category.applications.slice(1).map((app, i) => (
-                      <div key={app.id} className="mt-5 pt-4" style={{ borderTop: '1px solid #a21caf22' }}>
-                        <div className="has-text-info has-text-weight-semibold mb-1">{app.title}</div>
-                        <div className="has-text-white mb-2 is-size-6">{app.description}</div>
-                        <div className="notification is-link is-light is-family-monospace mb-2" style={{ borderRadius: 8, background: '#23272f', color: '#fff' }}>{app.prompt}</div>
-                        <ul className="has-text-white is-size-7" style={{ paddingLeft: 20 }}>
-                          {app.examples?.map((ex, j) => (
-                            <li key={j}>{ex}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+      {/* SEKCJA: AUTOMATYZACJA PROCESÓW */}
+      <section className="w-full max-w-5xl mt-4 animate-fadein4">
+        <h2 className="font-archivo text-2xl md:text-3xl font-black uppercase text-[#b3d1ff] mb-4">AUTOMATYZACJA PROCESÓW</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[1,2].map((i) => (
+            <div key={i} className="rounded-xl bg-[#2a4a8c] border border-[#b3d1ff] p-6 flex flex-col gap-4 shadow-lg relative animate-fadein5">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="font-archivo text-lg md:text-xl font-bold text-white">Automatyzacja umawiania wizyt</h3>
+                <img src="/aikumpel-ico.png" alt="AIKUMPEL" className="h-6 w-6" />
               </div>
-            ))}
-          </div>
+              <p className="text-[#b3d1ff] text-sm md:text-base font-semibold">AI może przejąć proces komunikacji z pacjentem poprzez automatyczne ustalanie terminów wizyt, wysyłanie przypomnień i zarządzanie kalendarzem lekarza. Dzięki temu zmniejsza się liczba nieobecności i zwiększa efektywność planowania pracy.<br/><br/>Zaprojektuj automatyczny system przypominający i planujący wizyty lekarskie u specjalisty, uwzględniający preferencje pacjenta oraz dostępność lekarza, który ma ograniczone godziny pracy. Uwzględnij wysyłanie przypomnień na email/SMS na 24 godziny i 2 godziny przed wizytą.</p>
+              <div className="bg-[#18305c] rounded-lg p-4 mt-2 font-mono text-xs md:text-sm text-white tracking-wide">
+                <div className="font-bold mb-1">PROMPT DO AI</div>
+                PRZETWÓRZ PONIŻSZE NOTATKI PACJENTA Z KONSULTACJI W PEŁNĄ, PROFESJONALNĄ DOKUMENTACJĘ MEDYCZNĄ ZAWIERAJĄCĄ DIAGNOZĘ, ZALECENIA TERAPEUTYCZNE, HISTORIĘ CHOROBY ORAZ PLAN DALSZEGO LECZENIA. UWZGLĘDNIJ KONTAKTY, DATY I USTALENIA. SEGREGUJ MEDYCZNE INFORMACJE WG STANDARDÓW HL7.
+              </div>
+            </div>
+          ))}
         </div>
       </section>
+      {/* ANIMACJE */}
+      <style jsx>{`
+        @keyframes fadein { from { opacity: 0; transform: translateY(-30px);} to { opacity: 1; transform: none; } }
+        @keyframes fadein2 { from { opacity: 0; transform: translateY(-20px);} to { opacity: 1; transform: none; } }
+        @keyframes fadein3 { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: none; } }
+        @keyframes fadein4 { from { opacity: 0; transform: translateY(40px);} to { opacity: 1; transform: none; } }
+        @keyframes fadein5 { from { opacity: 0; transform: scale(0.98);} to { opacity: 1; transform: scale(1); } }
+        .animate-fadein { animation: fadein 0.7s cubic-bezier(.4,2,.6,1) both; }
+        .animate-fadein2 { animation: fadein2 0.8s cubic-bezier(.4,2,.6,1) both; }
+        .animate-fadein3 { animation: fadein3 0.9s cubic-bezier(.4,2,.6,1) both; }
+        .animate-fadein4 { animation: fadein4 1s cubic-bezier(.4,2,.6,1) both; }
+        .animate-fadein5 { animation: fadein5 1.1s cubic-bezier(.4,2,.6,1) both; }
+      `}</style>
     </div>
   );
 }
