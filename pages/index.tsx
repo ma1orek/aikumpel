@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Copy, CheckCircle, Zap, ArrowRight } from 'lucide-react';
 import Head from 'next/head';
-
-const DM_SERIF = 'DM Serif Display, serif';
-const INTER = 'Inter, Arial, sans-serif';
+import Link from 'next/link';
 
 // --- Typy ---
 interface AIApplication {
@@ -22,33 +18,7 @@ interface AICategory {
   hasMore?: boolean;
 }
 
-const searchSuggestions = [
-  "Jestem marketingowcem w firmie e-commerce i tworzę kampanie reklamowe na różne platformy",
-  "Pracuję jako HR manager w międzynarodowej korporacji i rekrutuję specjalistów IT", 
-  "Jestem analitykiem danych w banku i analizuję trendy sprzedażowe oraz ryzyko kredytowe",
-  "Prowadzę własny biznes online - sklep z gadżetami i zarządzam całym procesem sprzedaży",
-  "Jestem copywriterem freelancerem i piszę treści marketingowe dla różnych branż",
-  "Pracuję w IT jako project manager i koordynuję zespoły developerskie w projektach agile",
-  "Jestem księgowym w średniej firmie i przygotowuję raporty finansowe oraz analizy kosztów",
-  "Prowadzę sklep internetowy z modą i obsługuję klientów oraz zarządzam logistyką",
-  "Jestem consultantem biznesowym i doradzam firmom w transformacji cyfrowej",
-  "Pracuję jako content creator i tworzę materiały wideo oraz posty na social media",
-  "Jestem menedżerem sprzedaży w firmie B2B i zarządzam zespołem sales oraz procesami",
-  "Pracuję w dziale customer success i pomagam klientom osiągnąć sukces z naszym produktem",
-  "Jestem właścicielem restauracji i zarządzam operacjami, marketingiem i zespołem",
-  "Pracuję jako UX designer w zespole produktowym i projektuję interfejsy aplikacji",
-  "Jestem trenerem biznesowym i pomagam ludziom rozwijać umiejętności przywódcze"
-];
-
 const REPLICATE_VERSION = 'openai/gpt-4.1-mini';
-
-const pastelCards = [
-  '#f3e8ff', // pastel fiolet
-  '#e0f2fe', // pastel błękit
-  '#ffe4ec', // pastel róż
-  '#e0ffe8', // pastel zielony
-  '#fffbe4', // pastel żółty
-];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -56,14 +26,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
-  const [showAnalyzing, setShowAnalyzing] = useState(false);
-  const [placeholderCursor, setPlaceholderCursor] = useState(true);
   const placeholderRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Animowany placeholder z kursorem
   useEffect(() => {
     if (!searchQuery) {
-      placeholderRef.current = setInterval(() => setPlaceholderCursor(c => !c), 500);
+      placeholderRef.current = setInterval(() => {}, 500);
     } else if (placeholderRef.current) {
       clearInterval(placeholderRef.current);
     }
@@ -138,7 +105,6 @@ export default function Home() {
 
   const generateAIRecommendations = async (jobDescription: string) => {
     setIsLoading(true);
-    setShowAnalyzing(true);
     try {
       const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.\n\nZwróć odpowiedź w formacie JSON z następującą strukturą:\n{\n  "categories": [\n    {\n      "name": "Nazwa kategorii",\n      "applications": [\n        {\n          "title": "Konkretny tytuł zastosowania (max 5 słów)",\n          "description": "Szczegółowy opis 2-3 zdania jak AI może pomóc w tym konkretnym zadaniu",\n          "prompt": "Bardzo dokładny prompt gotowy do użycia (min 200 znaków)",\n          "examples": ["Przykład 1 konkretnego zastosowania", "Przykład 2", "Przykład 3", "Przykład 4", "Przykład 5"]\n        }\n      ]\n    }\n  ]\n}\n\nKATEGORIE (wybierz 4-6 najbardziej pasujących):\n- Automatyzacja Procesów - automatyzacja powtarzalnych zadań\n- Analiza i Raporty - analizowanie danych, tworzenie raportów  \n- Tworzenie Treści - pisanie, editing, content marketing\n- Research i Analiza - badanie rynku, konkurencji, trendów\n- Komunikacja - emaile, prezentacje, komunikacja z klientami\n- Asystent Biznesowy - organizacja, planowanie, zarządzanie czasem\n- Marketing i Sprzedaż - kampanie, lead generation, sprzedaż\n- Zarządzanie Projektami - koordynacja, monitoring, planning\n- Customer Success - obsługa klientów, retencja, sukces\n- Finanse i Księgowość - budżety, faktury, analizy finansowe\n- Design i Kreatywność - projektowanie, UX/UI, grafika\n- E-commerce - sklepy online, sprzedaż, logistyka\n\nWYMAGANIA:\n- Dla każdej kategorii podaj 2-3 zastosowania\n- Każdy prompt musi być gotowy do skopiowania i użycia\n- Przykłady muszą być bardzo konkretne i praktyczne\n- Dostosuj wszystko do branży i roli użytkownika\n- Używaj tylko języka polskiego\n- Każde zastosowanie powinno mieć 5 przykładów\n- Prompty powinny być szczegółowe i praktyczne`;
       const userPrompt = `Opis mojej pracy: ${jobDescription}`;
@@ -158,7 +124,6 @@ export default function Home() {
       } catch {
         setResults(generateSmartFallback(jobDescription));
         setIsLoading(false);
-        setShowAnalyzing(false);
         setHasSearched(true);
         return;
       }
@@ -179,7 +144,6 @@ export default function Home() {
       setResults(generateSmartFallback(jobDescription));
     }
     setIsLoading(false);
-    setShowAnalyzing(false);
     setHasSearched(true);
   };
 
@@ -208,7 +172,9 @@ export default function Home() {
       <a href="#" className="js-colorlib-nav-toggle colorlib-nav-toggle"><i /></a>
       <aside id="colorlib-aside" role="complementary" className="js-fullheight">
         <h1 id="colorlib-logo" className="mb-4 mb-md-5">
-          <a href="/" style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}>AIASSIST</a>
+          <Link href="/" legacyBehavior>
+            <a style={{ backgroundImage: 'url(/images/bg_1.jpg)' }}>AIASSIST</a>
+          </Link>
         </h1>
         <nav id="colorlib-main-menu" role="navigation">
           <ul>
@@ -290,7 +256,7 @@ export default function Home() {
                               {results.length === 0 && (
                                 <p>Brak wyników. Spróbuj opisać swoją pracę inaczej.</p>
                               )}
-                              {results.map((cat, i) => (
+                              {results.map((cat) => (
                                 <div key={cat.name} className="mb-5">
                                   <h3 className="mb-3">{cat.name}</h3>
                                   {cat.applications.map(app => (
