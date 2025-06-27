@@ -47,17 +47,10 @@ export default function Home() {
   const [results, setResults] = useState<AICategory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [showCursor, setShowCursor] = useState(true);
   const [copiedPrompt, setCopiedPrompt] = useState<string | null>(null);
-  const [loadingBar, setLoadingBar] = useState(false);
   const [showAnalyzing, setShowAnalyzing] = useState(false);
   const [placeholderCursor, setPlaceholderCursor] = useState(true);
   const placeholderRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => setShowCursor(prev => !prev), 500);
-    return () => clearInterval(interval);
-  }, []);
 
   // Animowany placeholder z kursorem
   useEffect(() => {
@@ -68,12 +61,6 @@ export default function Home() {
     }
     return () => { if (placeholderRef.current) clearInterval(placeholderRef.current); };
   }, [searchQuery]);
-
-  // Loading bar
-  useEffect(() => {
-    if (isLoading) setLoadingBar(true);
-    else setTimeout(() => setLoadingBar(false), 400);
-  }, [isLoading]);
 
   const callReplicateAPI = async (systemPrompt: string, userPrompt: string, maxTokens: number = 4000) => {
     try {
@@ -209,30 +196,21 @@ export default function Home() {
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
       </Head>
-      {/* LOADING BAR */}
-      <div style={{position:'fixed',top:0,left:0,width:'100%',height:loadingBar?4:0,background:'linear-gradient(90deg,#7f5fff,#5aefff)',transition:'height 0.3s',zIndex:1000}}>
-        <div style={{width:isLoading?'60%':'100%',height:'100%',background:'linear-gradient(90deg,#7f5fff,#5aefff)',transition:'width 1.2s cubic-bezier(.4,0,.2,1)'}} />
-      </div>
       <div style={{background:'#111', minHeight:'100vh', color:'#fff', fontFamily: INTER}}>
-        {/* LOGO */}
-        <header className="w-100 text-center pt-5 pb-2 mb-2" style={{letterSpacing:'0.12em'}}>
-          <span style={{fontFamily: DM_SERIF, fontSize:'2.7rem', fontWeight:400, letterSpacing:'0.18em', textTransform:'uppercase', color:'#fff'}}>AIASSIST</span>
-        </header>
-        {/* HERO */}
-        <section className="text-center mb-5" style={{maxWidth:700,margin:'0 auto'}}>
-          <h1 style={{fontFamily: DM_SERIF, fontSize:'3.2rem', fontWeight:400, letterSpacing:'0.08em', lineHeight:1.08, marginBottom:'.5em', color:'#fff'}}>
-            W czym może<br/>pomóc Ci AI?
-          </h1>
-          <div style={{fontFamily: INTER, fontSize:'1.15rem', color:'#bbb', fontWeight:400, marginBottom:'2.5em', letterSpacing:'.01em'}}>
+        {/* HERO + LOGO */}
+        <header style={{textAlign:'center', paddingTop:64, paddingBottom:32}}>
+          <div style={{fontFamily: DM_SERIF, fontSize:'2.5rem', fontWeight:400, letterSpacing:'0.18em', textTransform:'uppercase', color:'#fff', marginBottom:24}}>AIASSIST</div>
+          <h1 style={{fontFamily: DM_SERIF, fontSize:'2.8rem', fontWeight:400, letterSpacing:'0.08em', lineHeight:1.08, color:'#fff', marginBottom:16}}>W czym może<br/>pomóc Ci AI?</h1>
+          <div style={{fontFamily: INTER, fontSize:'1.15rem', color:'#bbb', fontWeight:400, marginBottom:0, letterSpacing:'.01em', maxWidth:600, margin:'0 auto'}}>
             Opisz szczegółowo czym się zajmujesz w pracy, a otrzymasz spersonalizowaną listę konkretnych zastosowań AI assistentów z gotowymi promptami
           </div>
-        </section>
-        {/* SEARCH */}
-        <section className="d-flex flex-column align-items-center justify-content-center" style={{minHeight:'30vh', marginBottom:'2.5em', maxWidth:1200, margin:'0 auto'}}>
-          <div style={{width:'100%', maxWidth:540}}>
+        </header>
+        {/* WYSZUKIWARKA */}
+        <section style={{display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', margin:'0 auto', maxWidth:600, padding:'48px 0 64px 0'}}>
+          <div style={{width:'100%', position:'relative'}}>
             <textarea
-              className="form-control bg-transparent text-light border-0 border-bottom border-3 rounded-0 shadow-none fs-3 px-0 mb-4"
-              style={{minHeight:70, fontSize:'1.5rem', background:'transparent', color:'#fff', borderColor:isLoading?'#7f5fff':'#444', borderRadius:0, outline:'none', boxShadow:isLoading?'0 2px 0 #7f5fff':'none', resize:'vertical', transition:'border-color 0.3s'}}
+              className="form-control bg-transparent text-light border-0 border-bottom border-2 rounded-0 shadow-none fs-3 px-0 mb-4"
+              style={{minHeight:60, fontSize:'1.3rem', background:'transparent', color:'#fff', borderColor:'#444', borderRadius:0, outline:'none', boxShadow:'none', resize:'vertical', textAlign:'center', padding:'18px 0', marginBottom:32, fontFamily:INTER, letterSpacing:'.01em'}}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyPress}
@@ -240,17 +218,19 @@ export default function Home() {
             />
             {/* Animowany placeholder z kursorem */}
             {!searchQuery && (
-              <div style={{position:'absolute',left:16,top:10,fontSize:'1.5rem',color:'#888',pointerEvents:'none',fontFamily:INTER}}>
+              <div style={{position:'absolute',left:0,top:18,width:'100%',textAlign:'center',fontSize:'1.3rem',color:'#888',pointerEvents:'none',fontFamily:INTER}}>
                 Opisz bardzo szczegółowo czym się zajmujesz w pracy...
                 <span style={{color:'#7f5fff',opacity:placeholderCursor?1:0}}>|</span>
               </div>
             )}
-            <div className="text-end">
+            <div style={{width:'100%', display:'flex', justifyContent:'center', marginTop:24}}>
               <button
                 className="btn px-5 py-2 fs-5 rounded-0"
-                style={{letterSpacing:'0.08em', borderWidth:2, borderColor:'#7f5fff', color:'#fff', background:'linear-gradient(90deg,#7f5fff,#5aefff)', boxShadow:isLoading?'0 0 12px #7f5fff77':'none', transition:'box-shadow 0.3s, background 0.3s'}}
+                style={{letterSpacing:'0.08em', borderWidth:2, borderColor:'#444', color:'#fff', background:'transparent', borderStyle:'solid', borderRadius:8, transition:'border-color 0.2s, color 0.2s', fontWeight:500}}
                 onClick={handleSearch}
                 disabled={isLoading || !searchQuery.trim()}
+                onMouseOver={e => e.currentTarget.style.borderColor = '#7f5fff'}
+                onMouseOut={e => e.currentTarget.style.borderColor = '#444'}
               >
                 {isLoading ? <span className="spinner-border spinner-border-sm me-2" /> : <Zap size={22} className="me-2" />}
                 Analizuj <ArrowRight size={22} className="ms-2" />
@@ -266,24 +246,24 @@ export default function Home() {
           {hasSearched && results.length > 0 && (
             <section>
               {results.map((category, i) => (
-                <div key={category.name} style={{marginBottom:'3.5em', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i}s forwards`}}>
-                  <div style={{fontFamily: DM_SERIF, fontSize:'2.1rem', fontWeight:400, letterSpacing:'0.09em', marginBottom:'0.5em', borderBottom:'2px solid #7f5fff', paddingBottom:'0.2em', color:'#fff'}}>
+                <div key={category.name} style={{marginBottom:64, paddingBottom:48, borderBottom:'1px solid #222', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i}s forwards`}}>
+                  <div style={{fontFamily: DM_SERIF, fontSize:'2rem', fontWeight:400, letterSpacing:'0.09em', marginBottom:'1.5em', color:'#fff', textAlign:'left'}}>
                     {category.name}
                   </div>
-                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))',gap:'2.5em'}}>
+                  <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))',gap:'3.5em', alignItems:'start'}}>
                   {category.applications.map((app, j) => (
-                    <div key={app.id} style={{marginBottom:'2.2em', padding:'2em 1.5em', border:'1.5px solid #222', borderRadius:18, background:'rgba(30,30,40,0.92)', boxShadow:'0 2px 16px #0002', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i+0.1*j+0.2}s forwards`}}>
-                      <div style={{fontFamily: DM_SERIF, fontSize:'1.25rem', fontWeight:400, color:'#fff', marginBottom:'.3em', letterSpacing:'0.04em'}}>{app.title}</div>
-                      <div style={{fontFamily: INTER, color:'#bbb', fontSize:'1.08rem', marginBottom:'.7em'}}>{app.description}</div>
+                    <div key={app.id} style={{marginBottom:'2.2em', background:'none', boxShadow:'none', border:'none', borderRadius:0, padding:'0', opacity:0, transform:'translateY(40px)', animation:`fadeInUp 0.7s ${0.2*i+0.1*j+0.2}s forwards`}}>
+                      <div style={{fontFamily: DM_SERIF, fontSize:'1.25rem', fontWeight:400, color:'#fff', marginBottom:'.6em', letterSpacing:'0.04em', textAlign:'left'}}>{app.title}</div>
+                      <div style={{fontFamily: INTER, color:'#bbb', fontSize:'1.08rem', marginBottom:'.9em', textAlign:'left'}}>{app.description}</div>
                       {app.examples && app.examples.length > 0 && (
-                        <ul style={{fontFamily: INTER, color:'#fff', fontSize:'1.01rem', marginBottom:'.7em', paddingLeft:'1.2em', listStyle:'disc'}}>
+                        <ul style={{fontFamily: INTER, color:'#fff', fontSize:'1.01rem', marginBottom:'.7em', paddingLeft:'1.2em', listStyle:'disc', textAlign:'left'}}>
                           {app.examples.map((ex, idx) => (
-                            <li key={idx} style={{marginBottom:'.2em', color:'#7f5fff'}}>{ex}</li>
+                            <li key={idx} style={{marginBottom:'.2em', color:'#7f5fff', borderLeft:'2px solid #7f5fff', paddingLeft:8}}>{ex}</li>
                           ))}
                         </ul>
                       )}
                       {app.prompt && (
-                        <div style={{fontFamily: INTER, fontSize:'.98rem', color:'#fff', marginTop:'.7em', borderLeft:'2px solid #7f5fff', paddingLeft:'1em', position:'relative', background:'rgba(127,95,255,0.07)', borderRadius:8}}>
+                        <div style={{fontFamily: INTER, fontSize:'.98rem', color:'#fff', marginTop:'.7em', borderLeft:'2px solid #7f5fff', paddingLeft:'1em', position:'relative', background:'none', borderRadius:0, textAlign:'left'}}>
                           <span style={{fontWeight:600, color:'#7f5fff', fontSize:'.98rem', letterSpacing:'.01em'}}>Prompt:</span>
                           <span className="ms-2" style={{color:'#fff'}}>{app.prompt}</span>
                           <button className="btn btn-link btn-sm text-light ms-2 p-0 align-baseline" style={{textDecoration:'underline', fontSize:'.98rem'}} onClick={()=>copyPrompt(app.prompt!,app.id)}>
