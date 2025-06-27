@@ -61,6 +61,7 @@ export default function App() {
   const [generatingMore, setGeneratingMore] = useState<string | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
   const [connectionTest, setConnectionTest] = useState<'testing' | 'success' | 'failed' | null>(null)
+  const [rawApiOutput, setRawApiOutput] = useState<string | null>(null)
 
   // Replicate API Configuration
   const REPLICATE_TOKEN = process.env.NEXT_PUBLIC_REPLICATE_TOKEN || ''
@@ -251,173 +252,6 @@ export default function App() {
     }
   }
 
-  // Smart fallback system with intelligent mock data
-  const generateSmartFallback = (jobDescription: string): AICategory[] => {
-    console.log('🧠 Generating smart fallback based on job description...')
-    const description = jobDescription.toLowerCase()
-    
-    // Analyze keywords to determine relevant categories
-    const keywords = {
-      marketing: ['marketing', 'kampanie', 'reklam', 'social media', 'content', 'treści', 'brand', 'promocj'],
-      sales: ['sprzedaż', 'klient', 'lead', 'prospekt', 'ofert', 'negocjacj', 'sales', 'b2b', 'crm'],
-      analytics: ['analiz', 'dane', 'raport', 'metryki', 'statystyk', 'trend', 'wykres', 'bi', 'dashboard'],
-      hr: ['hr', 'rekrutacj', 'pracownik', 'talent', 'zespół', 'onboarding', 'performance'],
-      it: ['it', 'technolog', 'programow', 'system', 'projekt', 'develop', 'code', 'software', 'agile'],
-      finance: ['finansow', 'księgow', 'budżet', 'koszt', 'zysk', 'bilans', 'podatk', 'invoice'],
-      ecommerce: ['e-commerce', 'sklep', 'online', 'sprzedaż', 'produkt', 'magazyn', 'logistyk']
-    }
-
-    const categoryScores: {[key: string]: number} = {}
-    Object.entries(keywords).forEach(([category, words]) => {
-      categoryScores[category] = words.reduce((score, word) => {
-        return score + (description.includes(word) ? 1 : 0)
-      }, 0)
-    })
-
-    const results: AICategory[] = []
-
-    // Always include automation as it's universally applicable
-    results.push({
-      name: 'Automatyzacja Procesów',
-      icon: <Cog className="w-5 h-5" />,
-      color: 'from-blue-400 to-blue-600',
-      hasMore: true,
-      applications: [
-        {
-          id: 'auto-1',
-          title: 'Workflow Manager AI',
-          description: 'Automatyzuje codzienne zadania i procesy biznesowe, optymalizuje przepływ pracy i eliminuje powtarzalne czynności.',
-          category: 'Automatyzacja Procesów',
-          icon: <Sparkles className="w-4 h-4" />,
-          prompt: 'Jesteś ekspertem automatyzacji procesów biznesowych. Pomóż mi zoptymalizować mój workflow poprzez: 1) Identyfikację powtarzalnych zadań, 2) Zaprojektowanie automatycznych przepływów pracy, 3) Integrację z istniejącymi narzędziami, 4) Monitoring i optymalizację procesów, 5) Raportowanie efektywności automatyzacji.',
-          examples: [
-            'Automatyczne przekazywanie leadów między działami sprzedaży',
-            'Workflow zatwierdzania dokumentów z powiadomieniami',
-            'Automatyczne generowanie raportów okresowych',
-            'System przypomnień o terminach i deadlinach',
-            'Integracja między CRM a systemem marketingowym'
-          ]
-        }
-      ]
-    })
-
-    // Add category-specific applications based on detected keywords
-    const sortedCategories = Object.entries(categoryScores)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 3)
-
-    sortedCategories.forEach(([categoryKey, score]) => {
-      if (score > 0) {
-        switch(categoryKey) {
-          case 'marketing':
-            results.push({
-              name: 'Marketing i Sprzedaż',
-              icon: <Target className="w-5 h-5" />,
-              color: 'from-pink-400 to-rose-600',
-              hasMore: true,
-              applications: [
-                {
-                  id: 'marketing-1',
-                  title: 'Kampanie Marketingowe AI',
-                  description: 'Generuje strategie marketingowe, tworzy content dla różnych kanałów i optymalizuje kampanie reklamowe dla maksymalnego ROI.',
-                  category: 'Marketing i Sprzedaż',
-                  icon: <Sparkles className="w-4 h-4" />,
-                  prompt: 'Jesteś strategiem marketingowym. Pomóż mi stworzyć kompleksową kampanię marketingową obejmującą: 1) Analizę grupy docelowej, 2) Strategię content marketingu, 3) Plan dystrybucji wielokanałowej, 4) Budżetowanie i alokację środków, 5) Metryki sukcesu i KPIs, 6) Timeline realizacji kampanii.',
-                  examples: [
-                    'Kampania launch produktu z sekwencją email marketingu',
-                    'Strategia social media z kalendarzem publikacji',
-                    'Kampania influencer marketingu z micro-influencerami',
-                    'Retargeting campaign z personalizowanymi komunikatami',
-                    'Content marketing strategy z SEO optimization'
-                  ]
-                }
-              ]
-            })
-            break
-          case 'analytics':
-            results.push({
-              name: 'Analiza i Raporty',
-              icon: <BarChart3 className="w-5 h-5" />,
-              color: 'from-green-400 to-emerald-600',
-              hasMore: true,
-              applications: [
-                {
-                  id: 'analytics-1',
-                  title: 'Business Intelligence Hub',
-                  description: 'Analizuje dane biznesowe, tworzy interaktywne dashboardy i generuje insights dla podejmowania strategicznych decyzji.',
-                  category: 'Analiza i Raporty',
-                  icon: <Sparkles className="w-4 h-4" />,
-                  prompt: 'Jesteś analitykiem biznesowym. Pomóż mi stworzyć kompleksowy system analityczny zawierający: 1) Identyfikację kluczowych metryk i KPIs, 2) Automatyczne dashboardy z real-time data, 3) Predictive analytics i forecasting, 4) Segmentację i profilowanie klientów, 5) Competitive analysis, 6) Rekomendacje strategiczne oparte na danych.',
-                  examples: [
-                    'Dashboard sprzedaży z prognozami i trendami',
-                    'Analiza customer journey i conversion funnels',
-                    'Segmentacja klientów z personalizacją ofert',
-                    'Performance tracking kampanii marketingowych',
-                    'Financial forecasting z scenario planning'
-                  ]
-                }
-              ]
-            })
-            break
-          case 'hr':
-            results.push({
-              name: 'Zarządzanie Zespołem',
-              icon: <Users className="w-5 h-5" />,
-              color: 'from-emerald-400 to-teal-600',
-              hasMore: true,
-              applications: [
-                {
-                  id: 'hr-1',
-                  title: 'AI Talent Manager',
-                  description: 'Wspiera procesy rekrutacyjne, ocenę pracowników i rozwój talentów poprzez inteligentne matching i analytics.',
-                  category: 'Zarządzanie Zespołem',
-                  icon: <Sparkles className="w-4 h-4" />,
-                  prompt: 'Jesteś ekspertem HR i talent management. Pomóż mi zoptymalizować procesy zarządzania zespołem poprzez: 1) Strategię rekrutacji i employer branding, 2) System oceny kompetencji i performance, 3) Plany rozwoju i ścieżki kariery, 4) Employee engagement i retention, 5) Onboarding i training programs, 6) Team building i culture development.',
-                  examples: [
-                    'Automatyzacja screeningu CV i initial interviews',
-                    'System 360-degree feedback z action plans',
-                    'Personalizowane ścieżki rozwoju zawodowego',
-                    'Employee satisfaction surveys z insights',
-                    'Succession planning i talent pipeline management'
-                  ]
-                }
-              ]
-            })
-            break
-        }
-      }
-    })
-
-    // Add content creation if not already present
-    if (!results.find(r => r.name === 'Tworzenie Treści')) {
-      results.push({
-        name: 'Tworzenie Treści',
-        icon: <FileText className="w-5 h-5" />,
-        color: 'from-purple-400 to-pink-600',
-        hasMore: true,
-        applications: [
-          {
-            id: 'content-1',
-            title: 'Content Creation Assistant',
-            description: 'Tworzy różnorodne treści marketingowe, artykuły, posty społecznościowe i materiały komunikacyjne dostosowane do grupy docelowej.',
-            category: 'Tworzenie Treści',
-            icon: <Sparkles className="w-4 h-4" />,
-            prompt: 'Jesteś ekspertem content marketingu. Pomóż mi stworzyć kompleksową strategię treści obejmującą: 1) Content audit i gap analysis, 2) Editorial calendar z tematami i formatami, 3) SEO-optimized content creation, 4) Multi-format content repurposing, 5) Brand voice i tone of voice guidelines, 6) Content performance measurement.',
-            examples: [
-              'Blog posts z SEO optimization i internal linking',
-              'Social media content z platform-specific adaptation',
-              'Email newsletter sequences z personalizacją',
-              'Video scripts i storytelling frameworks',
-              'Whitepapers i case studies dla lead generation'
-            ]
-          }
-        ]
-      })
-    }
-
-    return results.slice(0, 4) // Return max 4 categories for demo
-  }
-
   const generateAIRecommendations = async (jobDescription: string) => {
     setIsLoading(true)
     setApiError(null)
@@ -425,47 +259,7 @@ export default function App() {
     try {
       const systemPrompt = `Jesteś ekspertem od rozwiązań AI dla biznesu. Na podstawie opisu pracy użytkownika, wygeneruj szczegółową listę konkretnych zastosowań AI assistentów.
 
-WAŻNE: Odpowiadaj TYLKO w formacie czystego JSON, bez żadnych dodatkowych komentarzy, nagłówków, markdown ani tekstu. Nie dodawaj żadnych wyjaśnień, tylko JSON!
-
-Zwróć odpowiedź w formacie JSON z następującą strukturą:
-{
-  "categories": [
-    {
-      "name": "Nazwa kategorii",
-      "applications": [
-        {
-          "title": "Konkretny tytuł zastosowania (max 5 słów)",
-          "description": "Szczegółowy opis 2-3 zdania jak AI może pomóc w tym konkretnym zadaniu",
-          "prompt": "Bardzo dokładny prompt gotowy do użycia (min 200 znaków)",
-          "examples": ["Przykład 1 konkretnego zastosowania", "Przykład 2", "Przykład 3", "Przykład 4", "Przykład 5"]
-        }
-      ]
-    }
-  ]
-}
-
-KATEGORIE (wybierz 4-6 najbardziej pasujących):
-- Automatyzacja Procesów - automatyzacja powtarzalnych zadań
-- Analiza i Raporty - analizowanie danych, tworzenie raportów  
-- Tworzenie Treści - pisanie, editing, content marketing
-- Research i Analiza - badanie rynku, konkurencji, trendów
-- Komunikacja - emaile, prezentacje, komunikacja z klientami
-- Asystent Biznesowy - organizacja, planowanie, zarządzanie czasem
-- Marketing i Sprzedaż - kampanie, lead generation, sprzedaż
-- Zarządzanie Projektami - koordynacja, monitoring, planning
-- Customer Success - obsługa klientów, retencja, sukces
-- Finanse i Księgowość - budżety, faktury, analizy finansowe
-- Design i Kreatywność - projektowanie, UX/UI, grafika
-- E-commerce - sklepy online, sprzedaż, logistyka
-
-WYMAGANIA:
-- Dla każdej kategorii podaj 2-3 zastosowania
-- Każdy prompt musi być gotowy do skopiowania i użycia
-- Przykłady muszą być bardzo konkretne i praktyczne
-- Dostosuj wszystko do branży i roli użytkownika
-- Używaj tylko języka polskiego
-- Każde zastosowanie powinno mieć 5 przykładów
-- Prompty powinny być szczegółowe i praktyczne`
+WAŻNE: Odpowiadaj TYLKO w formacie czystego JSON, bez żadnych dodatkowych komentarzy, nagłówków, markdown ani tekstu. NIE DODAWAJ ŻADNYCH WYJAŚNIEŃ, KOMENTARZY, MARKDOWN, ANI TEKSTU PRZED ANI PO JSON. Odpowiadaj tylko czystym JSON. Jeśli nie możesz odpowiedzieć w tym formacie, nie odpowiadaj wcale.`
 
       const userPrompt = `Opis mojej pracy: ${jobDescription}`
 
@@ -489,20 +283,24 @@ WYMAGANIA:
       // Now: aggressively clean outputText before parsing
       outputText = outputText.replace(/```json|```/g, '').replace(/^[^\{]*([\{\[].*)$/, '$1').replace(/([\}\]])[^\}\]]*$/, '$1').trim();
       let aiResponse
+      let rawOutputError = null
       try {
-        // Remove unsupported 's' flag and use [\s\S] for dotAll
         const jsonMatch = outputText.match(/[\{\[][\s\S]*[\}\]]/)
         const jsonText = jsonMatch ? jsonMatch[0] : outputText
         aiResponse = JSON.parse(jsonText)
       } catch (parseError) {
         console.error('❌ JSON Parse Error:', parseError)
         console.log('📄 Raw output:', outputText)
-        throw new Error('JSON_PARSE_ERROR')
+        rawOutputError = outputText
       }
 
       if (!aiResponse || !aiResponse.categories || !Array.isArray(aiResponse.categories)) {
-        console.error('❌ Invalid response structure:', aiResponse)
-        throw new Error('INVALID_RESPONSE_STRUCTURE')
+        setApiError('json_parse')
+        setResults([])
+        setRawApiOutput(rawOutputError)
+        setIsLoading(false)
+        setHasSearched(true)
+        return
       }
 
       // Transform the response to match our interface
@@ -531,25 +329,16 @@ WYMAGANIA:
       // Handle specific error types and show smart fallback
       if (error.message === 'CONNECTION_FAILED' || error.message.includes('fetch')) {
         setApiError('cors_blocked')
-        // Generate smart fallback
-        const fallbackResults = generateSmartFallback(jobDescription)
-        setResults(fallbackResults)
       } else if (error.message === 'INSUFFICIENT_CREDITS') {
         setApiError('credits')
-        const fallbackResults = generateSmartFallback(jobDescription)
-        setResults(fallbackResults)
       } else if (error.message === 'INVALID_TOKEN') {
         setApiError('token')
       } else if (error.message === 'RATE_LIMITED') {
         setApiError('rate_limit')
       } else if (error.message === 'REQUEST_TIMEOUT') {
         setApiError('timeout')
-        const fallbackResults = generateSmartFallback(jobDescription)
-        setResults(fallbackResults)
       } else {
         setApiError('general')
-        const fallbackResults = generateSmartFallback(jobDescription)
-        setResults(fallbackResults)
       }
     }
     
@@ -736,6 +525,13 @@ Zasady:
         description: "Wystąpił problem z Replicate API. Wygenerowałem inteligentne rekomendacje na podstawie Twojego opisu.",
         action: "Spróbuj ponownie",
         icon: <WifiOff className="h-4 w-4" />,
+        showFallback: true
+      },
+      json_parse: {
+        title: "Nie udało się sparsować odpowiedzi z Replicate",
+        description: "Replicate API nie zwrócił czystego JSON. Popraw prompt lub spróbuj ponownie.",
+        action: "Spróbuj ponownie",
+        icon: <AlertCircle className="h-4 w-4" />,
         showFallback: true
       }
     }
@@ -1091,7 +887,7 @@ Zasady:
                       </p>
                     </motion.div>
                     
-                    {results.map((category, categoryIndex) => {
+                    {results.map((category, idx) => {
                       const bulletColor = getCategoryBulletColor(category.color)
 
                       return (
@@ -1099,7 +895,7 @@ Zasady:
                           key={category.name}
                           initial={{ opacity: 0, y: 50 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: categoryIndex * 0.2, duration: 0.8 }}
+                          transition={{ delay: idx * 0.2, duration: 0.8 }}
                           className="mb-12"
                         >
                           <motion.div 
@@ -1123,7 +919,7 @@ Zasady:
                                   animate={{ opacity: 1, scale: 1 }}
                                   exit={{ opacity: 0, scale: 0.95 }}
                                   transition={{ 
-                                    delay: app.isGenerated ? 0 : categoryIndex * 0.2 + appIndex * 0.1, 
+                                    delay: app.isGenerated ? 0 : idx * 0.2 + appIndex * 0.1, 
                                     duration: 0.6 
                                   }}
                                   whileHover={{ 
@@ -1225,6 +1021,12 @@ Zasady:
                         </motion.div>
                       )
                     })}
+                  </div>
+                ) : apiError === 'json_parse' && rawApiOutput ? (
+                  <div className="max-w-2xl mx-auto my-8 p-6 rounded-xl bg-red-900/80 border border-red-400 text-red-100 font-mono text-xs whitespace-pre-wrap shadow-lg">
+                    <div className="font-bold text-red-200 mb-2">Nie udało się sparsować odpowiedzi z Replicate (model AI nie zwrócił czystego JSON):</div>
+                    <div>{rawApiOutput}</div>
+                    <div className="mt-2 text-red-300">Popraw prompt lub spróbuj ponownie.</div>
                   </div>
                 ) : apiError ? null : (
                   <div className="text-center py-24">
