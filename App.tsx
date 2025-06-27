@@ -764,7 +764,7 @@ Zasady:
                   <Button 
                     onClick={handleSearch}
                     disabled={isLoading || !searchQuery.trim()}
-                    className="bg-gradient-to-r from-purple-500 to-cyan-500 hover:from-purple-600 hover:to-cyan-600 px-16 py-8 rounded-2xl transition-all duration-300 disabled:opacity-50 text-2xl"
+                    className="bg-gradient-to-r from-fuchsia-500 via-pink-500 to-cyan-400 hover:from-cyan-400 hover:to-fuchsia-500 px-16 py-8 rounded-2xl transition-all duration-300 disabled:opacity-50 text-2xl font-bold shadow-xl border-2 border-fuchsia-400/40 focus:outline-none focus:ring-4 focus:ring-fuchsia-400/50"
                   >
                     {isLoading ? (
                       <motion.div
@@ -887,140 +887,41 @@ Zasady:
                       </p>
                     </motion.div>
                     
-                    {results.map((category, idx) => {
-                      const bulletColor = getCategoryBulletColor(category.color)
-
-                      return (
-                        <motion.div
-                          key={category.name}
-                          initial={{ opacity: 0, y: 50 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.2, duration: 0.8 }}
-                          className="mb-12"
-                        >
-                          <motion.div 
-                            className="flex items-center gap-4 mb-8"
-                            whileHover={{ x: 10 }}
-                            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                          >
-                            <div className={`p-4 bg-gradient-to-r ${category.color} rounded-2xl`}>
-                              {category.icon}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full max-w-5xl">
+                      {results.map((category, idx) => (
+                        <div key={category.name} className="rounded-2xl bg-gradient-to-br from-zinc-900/80 to-zinc-800/80 shadow-2xl border-2 border-fuchsia-400/20 p-8 flex flex-col gap-6 relative overflow-hidden mb-8">
+                          <div className="flex items-center gap-3 mb-2">
+                            <span className="w-3 h-3 rounded-full" style={{background: category.color}} />
+                            <span className="font-semibold text-lg text-white drop-shadow">{category.name}</span>
+                          </div>
+                          {/* PROMPT BOX */}
+                          <div className="rounded-xl bg-gradient-to-r from-fuchsia-700/80 to-cyan-700/80 p-4 text-white font-mono text-base shadow-inner mb-2 border border-fuchsia-400/30">
+                            <div className="font-bold text-xs mb-1 text-fuchsia-200 uppercase tracking-wider">Prompt do AI</div>
+                            <div className="whitespace-pre-line break-words">{category.applications[0]?.prompt}</div>
+                            <button onClick={() => copyPrompt(category.applications[0]?.prompt || '', category.applications[0]?.id || '')} className={`mt-2 px-3 py-1 rounded bg-fuchsia-600 hover:bg-cyan-500 text-xs font-semibold text-white transition-all ${copiedPrompt === category.applications[0]?.id ? 'opacity-60' : ''}`}>{copiedPrompt === category.applications[0]?.id ? 'Skopiowano!' : 'Kopiuj prompt'}</button>
+                          </div>
+                          {/* BULLETPOINTS/EXAMPLES */}
+                          <ul className="list-disc pl-6 space-y-1 text-white/90 text-base">
+                            {category.applications[0]?.examples?.map((ex, i) => (
+                              <li key={i}>{ex}</li>
+                            ))}
+                          </ul>
+                          {/* Pozostałe aplikacje (jeśli są) */}
+                          {category.applications.slice(1).map((app, i) => (
+                            <div key={app.id} className="mt-6 pt-4 border-t border-white/10">
+                              <div className="font-semibold text-fuchsia-300 mb-1">{app.title}</div>
+                              <div className="text-white/80 mb-2 text-base">{app.description}</div>
+                              <div className="rounded bg-zinc-900/80 p-3 text-xs text-fuchsia-200 font-mono mb-2">{app.prompt}</div>
+                              <ul className="list-disc pl-6 space-y-1 text-white/80 text-xs">
+                                {app.examples?.map((ex, j) => (
+                                  <li key={j}>{ex}</li>
+                                ))}
+                              </ul>
                             </div>
-                            <h4 className="text-3xl">{category.name}</h4>
-                            <div className="flex-1 h-px bg-gradient-to-r from-gray-700 to-transparent"></div>
-                          </motion.div>
-                          
-                          <div className="grid lg:grid-cols-2 gap-8 mb-6">
-                            <AnimatePresence>
-                              {category.applications.map((app, appIndex) => (
-                                <motion.div
-                                  key={app.id}
-                                  initial={{ opacity: 0, scale: 0.95 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  exit={{ opacity: 0, scale: 0.95 }}
-                                  transition={{ 
-                                    delay: app.isGenerated ? 0 : idx * 0.2 + appIndex * 0.1, 
-                                    duration: 0.6 
-                                  }}
-                                  whileHover={{ 
-                                    scale: 1.02,
-                                    y: -5
-                                  }}
-                                  className="group"
-                                >
-                                  <Card className={`bg-gray-900/60 backdrop-blur-sm border-gray-700/50 hover:border-purple-500/50 transition-all duration-500 h-full overflow-hidden ${app.isGenerated ? 'ring-2 ring-green-500/20' : ''}`}>
-                                    <div className="p-8">
-                                      <div className="flex items-start gap-4 mb-6">
-                                        <div className={`p-3 bg-gradient-to-r ${category.color} rounded-xl flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>
-                                          {app.icon}
-                                        </div>
-                                        <div className="flex-1">
-                                          <div className="flex items-center gap-2 mb-3">
-                                            <h5 className="text-xl text-white group-hover:text-purple-200 transition-colors">
-                                              {app.title}
-                                            </h5>
-                                            {app.isGenerated && (
-                                              <Badge variant="outline" className="text-green-400 border-green-500/30">
-                                                Nowe
-                                              </Badge>
-                                            )}
-                                          </div>
-                                          <p className="text-gray-300 leading-relaxed mb-6">
-                                            {app.description}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      
-                                      {app.examples && app.examples.length > 0 && (
-                                        <div className="mb-6">
-                                          <Badge variant="outline" className="mb-4 text-cyan-300 border-cyan-500/30">
-                                            Konkretne przykłady zastosowań:
-                                          </Badge>
-                                          <div className="space-y-3">
-                                            {app.examples.map((example, idx) => (
-                                              <div key={idx} className="flex items-start gap-3 text-gray-300">
-                                                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${bulletColor} mt-2 flex-shrink-0`}></div>
-                                                <span className="leading-relaxed">{example}</span>
-                                              </div>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-                                      
-                                      {app.prompt && (
-                                        <div className="border-t border-gray-700/50 pt-6">
-                                          <div className="flex items-center justify-between mb-3">
-                                            <Badge variant="outline" className="text-purple-300 border-purple-500/30">
-                                              Gotowy prompt do skopiowania:
-                                            </Badge>
-                                            <Button
-                                              size="sm"
-                                              variant="ghost"
-                                              onClick={() => copyPrompt(app.prompt!, app.id)}
-                                              className="text-purple-300 hover:text-purple-200 hover:bg-purple-500/10"
-                                            >
-                                              {copiedPrompt === app.id ? (
-                                                <CheckCircle className="w-4 h-4" />
-                                              ) : (
-                                                <Copy className="w-4 h-4" />
-                                              )}
-                                            </Button>
-                                          </div>
-                                          <div className="bg-black/50 rounded-xl p-4 text-sm text-gray-300 leading-relaxed font-mono border border-gray-700/30">
-                                            "{app.prompt}"
-                                          </div>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </Card>
-                                </motion.div>
-                              ))}
-                            </AnimatePresence>
-                          </div>
-
-                          <div className="flex justify-center gap-4">
-                            <Button
-                              onClick={() => generateMoreApplications(category.name)}
-                              disabled={generatingMore === category.name}
-                              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
-                            >
-                              {generatingMore === category.name ? (
-                                <motion.div
-                                  animate={{ rotate: 360 }}
-                                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                                  className="w-4 h-4 mr-2"
-                                >
-                                  <RefreshCw className="w-4 h-4" />
-                                </motion.div>
-                              ) : (
-                                <Sparkles className="w-4 h-4 mr-2" />
-                              )}
-                              Generuj więcej zastosowań
-                            </Button>
-                          </div>
-                        </motion.div>
-                      )
-                    })}
+                          ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ) : apiError === 'json_parse' && rawApiOutput ? (
                   <div className="max-w-2xl mx-auto my-8 p-6 rounded-xl bg-red-900/80 border border-red-400 text-red-100 font-mono text-xs whitespace-pre-wrap shadow-lg">
