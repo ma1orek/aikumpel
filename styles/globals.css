@@ -131,7 +131,7 @@
 
   body {
     @apply bg-background text-foreground;
-    background: #111;
+    background: #181a20;
     color: #fff;
     font-family: 'Inter', Arial, sans-serif;
     margin: 0;
@@ -206,7 +206,7 @@ html {
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital,wght@0,400;1,400&family=Inter:wght@400;600&display=swap');
 
 body {
-  background: #111;
+  background: #181a20;
   color: #fff;
   font-family: 'Inter', Arial, sans-serif;
   margin: 0;
@@ -372,4 +372,140 @@ textarea:focus {
   gap: 2.5em;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.dashboard-container {
+  background: #23242a;
+  border-radius: 32px;
+  box-shadow: 0 8px 48px #0004;
+  width: 100%;
+  max-width: 1280px;
+  min-height: 700px;
+  padding: 48px 56px 40px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.dashboard-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #fff;
+  background: #2e2f38;
+  border-radius: 16px;
+  padding: 8px 24px;
+}
+
+.dashboard-nav {
+  display: flex;
+  gap: 32px;
+  margin-left: 32px;
+}
+.dashboard-nav a {
+  color: #bbb;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 1.08rem;
+  text-decoration: none;
+  letter-spacing: .01em;
+}
+
+.dashboard-login-btn {
+  background: #23242a;
+  color: #fff;
+  border: 1.5px solid #333;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  padding: 7px 22px;
+}
+
+.search-card {
+  background: #23242a;
+  border-radius: 24px;
+  box-shadow: 0 2px 16px #0002;
+  padding: 40px 32px 32px 32px;
+  max-width: 520px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.pastel-card-fiolet { background: #f3e8ff; }
+.pastel-card-blue { background: #e0f2fe; }
+.pastel-card-pink { background: #ffe4ec; }
+.pastel-card-green { background: #e0ffe8; }
+.pastel-card-yellow { background: #fffbe4; }
+
+.result-category-card {
+  border-radius: 24px;
+  box-shadow: 0 2px 16px #0001;
+  padding: 32px 28px 28px 28px;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.result-app-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 8px #0001;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-app-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #23242a;
+  margin-bottom: 4px;
+  letter-spacing: .02em;
+}
+.result-app-desc {
+  font-family: 'Inter', Arial, sans-serif;
+  color: #444;
+  font-size: .99rem;
+  margin-bottom: 6px;
+}
+.result-examples {
+  font-family: 'Inter', Arial, sans-serif;
+  color: #7f5fff;
+  font-size: .97rem;
+  margin-bottom: 4px;
+  padding-left: 18px;
+  list-style: disc;
+}
+.result-prompt {
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: .97rem;
+  color: #23242a;
+  margin-top: 4px;
+  border-left: 2px solid #7f5fff;
+  padding-left: 1em;
+  background: #f3e8ff22;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@keyframes fadeInUp {
+  0% { opacity:0; transform:translateY(40px); }
+  100% { opacity:1; transform:translateY(0); }
 }
